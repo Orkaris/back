@@ -24,7 +24,7 @@ Pour démarrer le serveur en mode développement :
 docker compose up --build -d
 ```
 
-### INFO API
+## INFO API
 
 La documentation de l'API est disponible via Swagger. Vous pouvez y accéder en lançant le serveur et en visitant le lien suivant :
 
