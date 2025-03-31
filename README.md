@@ -23,3 +23,14 @@ Pour démarrer le serveur en mode développement :
 ```bash
 docker compose up --build -d
 ```
+
+### INFO API
+
+La documentation de l'API est disponible via Swagger. Vous pouvez y accéder en lançant le serveur et en visitant le lien suivant :
+
+[http://localhost:5000/swagger/index.html](http://localhost:5000/swagger/index.html)
+
+Pour tester si l'API marche bien faite : 
+```bash
+curl -X 'GET' \ 'http://localhost:5000/weatherforecast' \ -H 'accept: application/json'
+```
