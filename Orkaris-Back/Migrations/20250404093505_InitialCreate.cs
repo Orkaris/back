@@ -1,0 +1,303 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Orkaris_Back.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "t_e_Exercise_exr",
+                columns: table => new
+                {
+                    exr_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    exr_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    exr_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exercise", x => x.exr_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_sport_spo",
+                columns: table => new
+                {
+                    spo_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    spo_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sport", x => x.spo_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_user_usr",
+                columns: table => new
+                {
+                    usr_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    usr_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    usr_email = table.Column<string>(type: "text", nullable: false),
+                    usr_password = table.Column<string>(type: "text", nullable: false),
+                    usr_gender = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    usr_height = table.Column<int>(type: "integer", nullable: false),
+                    usr_weight = table.Column<int>(type: "integer", nullable: false),
+                    usr_birth_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    usr_profile_type = table.Column<int>(type: "integer", nullable: false),
+                    usr_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.usr_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_exercise_goal_exg",
+                columns: table => new
+                {
+                    exg_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    exg_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    exg_reps = table.Column<int>(type: "integer", nullable: false),
+                    exg_sets = table.Column<int>(type: "integer", nullable: false),
+                    exr_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    exr_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExerciseGoal", x => x.exg_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_exercise_goal_exg_t_e_Exercise_exr_exr_id",
+                        column: x => x.exr_id,
+                        principalTable: "t_e_Exercise_exr",
+                        principalColumn: "exr_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_type_tpe",
+                columns: table => new
+                {
+                    tpe_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tpe_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    spo_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tpe_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Type", x => x.tpe_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_type_tpe_t_e_sport_spo_spo_id",
+                        column: x => x.spo_id,
+                        principalTable: "t_e_sport_spo",
+                        principalColumn: "spo_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_Program_pgr",
+                columns: table => new
+                {
+                    pfr_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    pfr_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    usr_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    pfr_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Program", x => x.pfr_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_Program_pgr_t_e_user_usr_usr_id",
+                        column: x => x.usr_id,
+                        principalTable: "t_e_user_usr",
+                        principalColumn: "usr_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_session_ses",
+                columns: table => new
+                {
+                    ses_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ses_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    usr_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ses_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Session", x => x.ses_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_session_ses_t_e_user_usr_usr_id",
+                        column: x => x.usr_id,
+                        principalTable: "t_e_user_usr",
+                        principalColumn: "usr_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_exercise_goal_performance_egp",
+                columns: table => new
+                {
+                    egp_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    egp_reps = table.Column<int>(type: "integer", nullable: false),
+                    egp_sets = table.Column<int>(type: "integer", nullable: false),
+                    egp_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    exg_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExerciseGoalPerformance", x => x.egp_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_exercise_goal_performance_egp_t_e_exercise_goal_exg_exg~",
+                        column: x => x.exg_id,
+                        principalTable: "t_e_exercise_goal_exg",
+                        principalColumn: "exg_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_exercice_type_ext",
+                columns: table => new
+                {
+                    exe_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tpe_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExerciseType", x => new { x.exe_id, x.tpe_id });
+                    table.ForeignKey(
+                        name: "FK_t_j_exercice_type_ext_t_e_Exercise_exr_exe_id",
+                        column: x => x.exe_id,
+                        principalTable: "t_e_Exercise_exr",
+                        principalColumn: "exr_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_exercice_type_ext_t_e_type_tpe_exe_id",
+                        column: x => x.exe_id,
+                        principalTable: "t_e_type_tpe",
+                        principalColumn: "tpe_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_session_performance_spe",
+                columns: table => new
+                {
+                    spe_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ses_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    spe_feeling = table.Column<string>(type: "text", nullable: true),
+                    spe_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionPerformance", x => x.spe_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_session_performance_spe_t_e_session_ses_ses_id",
+                        column: x => x.ses_id,
+                        principalTable: "t_e_session_ses",
+                        principalColumn: "ses_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_j_session_exercise_goal_seg",
+                columns: table => new
+                {
+                    ses_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    exg_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionExercise", x => new { x.ses_id, x.exg_id });
+                    table.ForeignKey(
+                        name: "FK_t_j_session_exercise_goal_seg_t_e_exercise_goal_exg_exg_id",
+                        column: x => x.exg_id,
+                        principalTable: "t_e_exercise_goal_exg",
+                        principalColumn: "exg_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_j_session_exercise_goal_seg_t_e_session_ses_ses_id",
+                        column: x => x.ses_id,
+                        principalTable: "t_e_session_ses",
+                        principalColumn: "ses_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_exercise_goal_exg_exr_id",
+                table: "t_e_exercise_goal_exg",
+                column: "exr_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_exercise_goal_performance_egp_exg_id",
+                table: "t_e_exercise_goal_performance_egp",
+                column: "exg_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_Program_pgr_usr_id",
+                table: "t_e_Program_pgr",
+                column: "usr_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_session_performance_spe_ses_id",
+                table: "t_e_session_performance_spe",
+                column: "ses_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_session_ses_usr_id",
+                table: "t_e_session_ses",
+                column: "usr_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_type_tpe_spo_id",
+                table: "t_e_type_tpe",
+                column: "spo_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_j_session_exercise_goal_seg_exg_id",
+                table: "t_j_session_exercise_goal_seg",
+                column: "exg_id");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "t_e_exercise_goal_performance_egp");
+
+            migrationBuilder.DropTable(
+                name: "t_e_Program_pgr");
+
+            migrationBuilder.DropTable(
+                name: "t_e_session_performance_spe");
+
+            migrationBuilder.DropTable(
+                name: "t_j_exercice_type_ext");
+
+            migrationBuilder.DropTable(
+                name: "t_j_session_exercise_goal_seg");
+
+            migrationBuilder.DropTable(
+                name: "t_e_type_tpe");
+
+            migrationBuilder.DropTable(
+                name: "t_e_exercise_goal_exg");
+
+            migrationBuilder.DropTable(
+                name: "t_e_session_ses");
+
+            migrationBuilder.DropTable(
+                name: "t_e_sport_spo");
+
+            migrationBuilder.DropTable(
+                name: "t_e_Exercise_exr");
+
+            migrationBuilder.DropTable(
+                name: "t_e_user_usr");
+        }
+    }
+}
