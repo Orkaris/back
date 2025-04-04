@@ -15,13 +15,17 @@ namespace Orkaris_Back.Models.EntityFramework
 
         [Required, Column("usr_id")]
         public Guid UserId { get; set; }
+        [Required, Column("wrk_id")]
+        public Guid WorkoutId { get; set; }
 
         [Required, Column("ses_created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
-        [ForeignKey("UserId"), InverseProperty(nameof(User.UserSession))]
-        public virtual User? SessionUser { get; set; }
+        [ForeignKey("UserId"), InverseProperty(nameof(User.SessionUser))]
+        public virtual User? UserSession { get; set; }
+        [ForeignKey("WorkoutId"), InverseProperty(nameof(Workout.SessionWorkout))]
+        public virtual Workout? WorkoutSession { get; set; }
 
         [InverseProperty(nameof(SessionExercise.SessionSessionExercise))]
         public virtual ICollection<SessionExercise> SessionExerciseSession { get; set; } = new List<SessionExercise>();

@@ -37,10 +37,10 @@ namespace Orkaris_Back.Models.EntityFramework
 
         // Navigation property
 
-        [InverseProperty(nameof(Program.UserProgram))]
-        public virtual ICollection<Program> ProgramUser { get; set; } = new List<Program>();
+        [InverseProperty(nameof(Workout.UserWorkout))]
+        public virtual ICollection<Workout> WorkoutUser { get; set; } = new List<Workout>();
 
-        [InverseProperty(nameof(Session.SessionUser))]
-        public virtual ICollection<Session> UserSession { get; set; } = new List<Session>();
+        [InverseProperty(nameof(Session.UserSession))]
+        public virtual ICollection<Session> SessionUser { get; set; } = new List<Session>();
     }
 }
