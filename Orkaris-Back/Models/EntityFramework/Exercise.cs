@@ -14,7 +14,10 @@ namespace Orkaris_Back.Models.EntityFramework
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
-        [InverseProperty("SessionExerciceExercise")]
-        public virtual ICollection<SessionExercise> ExerciseSessionExercice { get; set; } = new List<SessionExercise>();
+        [InverseProperty(nameof(ExerciseGoal.ExerciseExerciseGoal))]
+        public virtual ICollection<ExerciseGoal> ExerciseGoalExercice { get; set; } = new List<ExerciseGoal>();
+        
+        [InverseProperty(nameof(ExerciseType.ExerciseExerciseType))]
+        public virtual ICollection<ExerciseType> ExerciseTypeExercise { get; set; } = new List<ExerciseType>();
     }
 }

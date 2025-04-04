@@ -23,12 +23,13 @@ namespace Orkaris_Back.Models.EntityFramework
 
 
         // Navigation property
-        [ForeignKey("ExerciseId"), InverseProperty("ExerciseGoalExercise")]
+        [ForeignKey("ExerciseId"), InverseProperty(nameof(Exercise.ExerciseGoalExercice))]
         public Exercise? ExerciseExerciseGoal { get; set; }
-        [InverseProperty(nameof(SessionExercise.SessionExerciceGoalExercise))]
-        public virtual ICollection<SessionExercise> ExerciseGoalSessionExercice { get; set; } = new List<SessionExercise>();
 
-        [InverseProperty(nameof(ExerciseGoalPerfomance.ExerciseGoalExerciseGoalPerfomance))]
-        public virtual ICollection<ExerciseGoalPerfomance> ExerciseGoalPerfomanceExerciseGoal { get; set; } = new List<ExerciseGoalPerfomance>();
+        [InverseProperty(nameof(SessionExercise.ExerciseGoalSessionExercise))]
+        public virtual ICollection<SessionExercise> SessionExerciseExerciseGoal { get; set; } = new List<SessionExercise>();
+
+        [InverseProperty(nameof(ExerciseGoalPerformance.ExerciseGoalExerciseGoalPerformance))]
+        public virtual ICollection<ExerciseGoalPerformance> ExerciseGoalPerformanceExerciseGoal { get; set; } = new List<ExerciseGoalPerformance>();
     }
 }

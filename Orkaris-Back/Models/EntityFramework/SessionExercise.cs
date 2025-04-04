@@ -12,11 +12,11 @@ namespace Orkaris_Back.Models.EntityFramework
         public Guid ExerciseId { get; set; }
 
         // Navigation property
-        [ForeignKey("SessionId"), InverseProperty("SessionSessionExercise")]
-        public Session? SessionExerciseSession { get; set; }
+        [ForeignKey("SessionId"), InverseProperty(nameof(Session.SessionExerciseSession))]
+        public Session? SessionSessionExercise { get; set; }
 
-        [ForeignKey("ExerciseId"), InverseProperty("ExerciseSessionExerciceGoal")]
-        public ExerciseGoal? SessionExerciceGoalExercise { get; set; }
+        [ForeignKey("ExerciseId"), InverseProperty(nameof(ExerciseGoal.SessionExerciseExerciseGoal))]
+        public ExerciseGoal? ExerciseGoalSessionExercise { get; set; }
         
     }
 }

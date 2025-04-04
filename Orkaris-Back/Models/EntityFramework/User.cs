@@ -39,5 +39,8 @@ namespace Orkaris_Back.Models.EntityFramework
 
         [InverseProperty(nameof(Program.UserProgram))]
         public virtual ICollection<Program> ProgramUser { get; set; } = new List<Program>();
+
+        [InverseProperty(nameof(Session.SessionUser))]
+        public virtual ICollection<Session> UserSession { get; set; } = new List<Session>();
     }
 }

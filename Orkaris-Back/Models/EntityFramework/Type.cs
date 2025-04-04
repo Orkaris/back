@@ -14,13 +14,15 @@ namespace Orkaris_Back.Models.EntityFramework
         public string Name { get; set; } = string.Empty;
 
         [ForeignKey("Sport"), Required, Column("spo_id")]
-        public int SportId { get; set; }
+        public Guid SportId { get; set; }
         [Column("tpe_created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
-        [ForeignKey("SportId"), InverseProperty("TypeSport")]
+        [ForeignKey("SportId"), InverseProperty(nameof(Sport.TypeSport))]
         public virtual Sport? SportType { get; set; }
+        [InverseProperty(nameof(ExerciseType.TypeExerciseType))]
+        public virtual ICollection<ExerciseType> ExerciseTypeType { get; set; } = new List<ExerciseType>();
 
     }
 }

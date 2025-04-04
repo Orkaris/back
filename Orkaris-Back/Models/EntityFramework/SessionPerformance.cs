@@ -20,7 +20,7 @@ namespace Orkaris_Back.Models.EntityFramework
         public DateTime Date { get; set; }
 
         // Navigation properties
-        [ForeignKey("SessionId"), InverseProperty("SessionSessionPerformance")]
+        [ForeignKey("SessionId"), InverseProperty(nameof(Session.SessionPerformanceSession))]
         public Session? SessionSessionPerformance { get; set; }
 
     }

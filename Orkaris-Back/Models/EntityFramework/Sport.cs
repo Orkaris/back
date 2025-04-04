@@ -14,7 +14,7 @@ namespace Orkaris_Back.Models.EntityFramework
         public string Name { get; set; } = string.Empty;
 
         // Navigation property
-        [InverseProperty("SportType")]
+        [InverseProperty(nameof(Type.SportType))]
         public virtual ICollection<Type> TypeSport { get; set; } = new List<Type>();       
     }
 }

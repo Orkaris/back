@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Orkaris_Back.Models.EntityFramework
 {
     [Table("t_e_exercise_goal_performance_egp")]
-    public class ExerciseGoalPerfomance
+    public class ExerciseGoalPerformance
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("egp_id")]
         public Guid Id { get; set; }
@@ -19,8 +19,8 @@ namespace Orkaris_Back.Models.EntityFramework
         public Guid ExerciseGoalId { get; set; }
 
         // Navigation property
-        [ForeignKey("ExerciseGoalId"), InverseProperty("ExerciseGoalPerfomanceExerciseGoal")]
-        public ExerciseGoal? ExerciseGoalExerciseGoalPerfomance { get; set; }
+        [ForeignKey("ExerciseGoalId"), InverseProperty(nameof(ExerciseGoal.ExerciseGoalPerformanceExerciseGoal))]
+        public ExerciseGoal? ExerciseGoalExerciseGoalPerformance { get; set; }
        
     }
 }
