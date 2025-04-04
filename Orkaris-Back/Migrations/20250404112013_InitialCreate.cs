@@ -89,7 +89,7 @@ namespace Orkaris_Back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Type", x => x.tpe_id);
+                    table.PrimaryKey("PK_Category", x => x.tpe_id);
                     table.ForeignKey(
                         name: "FK_t_e_type_tpe_t_e_sport_spo_spo_id",
                         column: x => x.spo_id,
@@ -99,7 +99,7 @@ namespace Orkaris_Back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "t_e_Program_pgr",
+                name: "t_e_Workout_pgr",
                 columns: table => new
                 {
                     pfr_id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -109,29 +109,9 @@ namespace Orkaris_Back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Program", x => x.pfr_id);
+                    table.PrimaryKey("PK_Workout", x => x.pfr_id);
                     table.ForeignKey(
-                        name: "FK_t_e_Program_pgr_t_e_user_usr_usr_id",
-                        column: x => x.usr_id,
-                        principalTable: "t_e_user_usr",
-                        principalColumn: "usr_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "t_e_session_ses",
-                columns: table => new
-                {
-                    ses_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ses_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    usr_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ses_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Session", x => x.ses_id);
-                    table.ForeignKey(
-                        name: "FK_t_e_session_ses_t_e_user_usr_usr_id",
+                        name: "FK_t_e_Workout_pgr_t_e_user_usr_usr_id",
                         column: x => x.usr_id,
                         principalTable: "t_e_user_usr",
                         principalColumn: "usr_id",
@@ -168,7 +148,7 @@ namespace Orkaris_Back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseType", x => new { x.exe_id, x.tpe_id });
+                    table.PrimaryKey("PK_ExerciseCategory", x => new { x.exe_id, x.tpe_id });
                     table.ForeignKey(
                         name: "FK_t_j_exercice_type_ext_t_e_Exercise_exr_exe_id",
                         column: x => x.exe_id,
@@ -180,6 +160,33 @@ namespace Orkaris_Back.Migrations
                         column: x => x.exe_id,
                         principalTable: "t_e_type_tpe",
                         principalColumn: "tpe_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_e_session_ses",
+                columns: table => new
+                {
+                    ses_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ses_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    usr_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    wrk_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ses_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Session", x => x.ses_id);
+                    table.ForeignKey(
+                        name: "FK_t_e_session_ses_t_e_Workout_pgr_wrk_id",
+                        column: x => x.wrk_id,
+                        principalTable: "t_e_Workout_pgr",
+                        principalColumn: "pfr_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_e_session_ses_t_e_user_usr_usr_id",
+                        column: x => x.usr_id,
+                        principalTable: "t_e_user_usr",
+                        principalColumn: "usr_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -238,11 +245,6 @@ namespace Orkaris_Back.Migrations
                 column: "exg_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_e_Program_pgr_usr_id",
-                table: "t_e_Program_pgr",
-                column: "usr_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_t_e_session_performance_spe_ses_id",
                 table: "t_e_session_performance_spe",
                 column: "ses_id");
@@ -253,9 +255,19 @@ namespace Orkaris_Back.Migrations
                 column: "usr_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_t_e_session_ses_wrk_id",
+                table: "t_e_session_ses",
+                column: "wrk_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_t_e_type_tpe_spo_id",
                 table: "t_e_type_tpe",
                 column: "spo_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_Workout_pgr_usr_id",
+                table: "t_e_Workout_pgr",
+                column: "usr_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_t_j_session_exercise_goal_seg_exg_id",
@@ -268,9 +280,6 @@ namespace Orkaris_Back.Migrations
         {
             migrationBuilder.DropTable(
                 name: "t_e_exercise_goal_performance_egp");
-
-            migrationBuilder.DropTable(
-                name: "t_e_Program_pgr");
 
             migrationBuilder.DropTable(
                 name: "t_e_session_performance_spe");
@@ -295,6 +304,9 @@ namespace Orkaris_Back.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_e_Exercise_exr");
+
+            migrationBuilder.DropTable(
+                name: "t_e_Workout_pgr");
 
             migrationBuilder.DropTable(
                 name: "t_e_user_usr");

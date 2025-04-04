@@ -12,7 +12,7 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250404093505_InitialCreate")]
+    [Migration("20250404112013_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,35 @@ namespace Orkaris_Back.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("tpe_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("tpe_created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("tpe_name");
+
+                    b.Property<Guid>("SportId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("spo_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Category");
+
+                    b.HasIndex("SportId");
+
+                    b.ToTable("t_e_type_tpe", (string)null);
+                });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Exercise", b =>
                 {
@@ -46,6 +75,22 @@ namespace Orkaris_Back.Migrations
                         .HasName("PK_Exercise");
 
                     b.ToTable("t_e_Exercise_exr", (string)null);
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseCategory", b =>
+                {
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("exe_id");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tpe_id");
+
+                    b.HasKey("ExerciseId", "CategoryId")
+                        .HasName("PK_ExerciseCategory");
+
+                    b.ToTable("t_j_exercice_type_ext", (string)null);
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseGoal", b =>
@@ -116,51 +161,6 @@ namespace Orkaris_Back.Migrations
                     b.ToTable("t_e_exercise_goal_performance_egp", (string)null);
                 });
 
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseType", b =>
-                {
-                    b.Property<Guid>("ExerciseId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("exe_id");
-
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tpe_id");
-
-                    b.HasKey("ExerciseId", "TypeId")
-                        .HasName("PK_ExerciseType");
-
-                    b.ToTable("t_j_exercice_type_ext", (string)null);
-                });
-
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Program", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("pfr_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("pfr_created_at");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("pfr_name");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("usr_id");
-
-                    b.HasKey("Id")
-                        .HasName("PK_Program");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("t_e_Program_pgr", (string)null);
-                });
-
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Session", b =>
                 {
                     b.Property<Guid>("Id")
@@ -182,10 +182,16 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("usr_id");
 
+                    b.Property<Guid>("WorkoutId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("wrk_id");
+
                     b.HasKey("Id")
                         .HasName("PK_Session");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("WorkoutId");
 
                     b.ToTable("t_e_session_ses", (string)null);
                 });
@@ -254,35 +260,6 @@ namespace Orkaris_Back.Migrations
                     b.ToTable("t_e_sport_spo", (string)null);
                 });
 
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Type", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("tpe_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("tpe_created_at");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("tpe_name");
-
-                    b.Property<Guid>("SportId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("spo_id");
-
-                    b.HasKey("Id")
-                        .HasName("PK_Type");
-
-                    b.HasIndex("SportId");
-
-                    b.ToTable("t_e_type_tpe", (string)null);
-                });
-
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -338,6 +315,65 @@ namespace Orkaris_Back.Migrations
                     b.ToTable("t_e_user_usr", (string)null);
                 });
 
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Workout", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("pfr_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("pfr_created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("pfr_name");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("usr_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Workout");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("t_e_Workout_pgr", (string)null);
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Category", b =>
+                {
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.Sport", "SportCategory")
+                        .WithMany("CategorySport")
+                        .HasForeignKey("SportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SportCategory");
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseCategory", b =>
+                {
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.Category", "CategoryExerciseCategory")
+                        .WithMany("ExerciseCategoryCategory")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.Exercise", "ExerciseExerciseCategory")
+                        .WithMany("ExerciseCategoryExercise")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CategoryExerciseCategory");
+
+                    b.Navigation("ExerciseExerciseCategory");
+                });
+
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseGoal", b =>
                 {
                     b.HasOne("Orkaris_Back.Models.EntityFramework.Exercise", "ExerciseExerciseGoal")
@@ -360,45 +396,23 @@ namespace Orkaris_Back.Migrations
                     b.Navigation("ExerciseGoalExerciseGoalPerformance");
                 });
 
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseType", b =>
-                {
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.Exercise", "ExerciseExerciseType")
-                        .WithMany("ExerciseTypeExercise")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.Type", "TypeExerciseType")
-                        .WithMany("ExerciseTypeType")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ExerciseExerciseType");
-
-                    b.Navigation("TypeExerciseType");
-                });
-
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Program", b =>
-                {
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.User", "UserProgram")
-                        .WithMany("ProgramUser")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserProgram");
-                });
-
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Session", b =>
                 {
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.User", "SessionUser")
-                        .WithMany("UserSession")
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.User", "UserSession")
+                        .WithMany("SessionUser")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SessionUser");
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.Workout", "WorkoutSession")
+                        .WithMany("SessionWorkout")
+                        .HasForeignKey("WorkoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserSession");
+
+                    b.Navigation("WorkoutSession");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.SessionExercise", b =>
@@ -431,22 +445,27 @@ namespace Orkaris_Back.Migrations
                     b.Navigation("SessionSessionPerformance");
                 });
 
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Type", b =>
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Workout", b =>
                 {
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.Sport", "SportType")
-                        .WithMany("TypeSport")
-                        .HasForeignKey("SportId")
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.User", "UserWorkout")
+                        .WithMany("WorkoutUser")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SportType");
+                    b.Navigation("UserWorkout");
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Category", b =>
+                {
+                    b.Navigation("ExerciseCategoryCategory");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Exercise", b =>
                 {
-                    b.Navigation("ExerciseGoalExercice");
+                    b.Navigation("ExerciseCategoryExercise");
 
-                    b.Navigation("ExerciseTypeExercise");
+                    b.Navigation("ExerciseGoalExercice");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseGoal", b =>
@@ -465,19 +484,19 @@ namespace Orkaris_Back.Migrations
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Sport", b =>
                 {
-                    b.Navigation("TypeSport");
-                });
-
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Type", b =>
-                {
-                    b.Navigation("ExerciseTypeType");
+                    b.Navigation("CategorySport");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.User", b =>
                 {
-                    b.Navigation("ProgramUser");
+                    b.Navigation("SessionUser");
 
-                    b.Navigation("UserSession");
+                    b.Navigation("WorkoutUser");
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Workout", b =>
+                {
+                    b.Navigation("SessionWorkout");
                 });
 #pragma warning restore 612, 618
         }
