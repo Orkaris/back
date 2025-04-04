@@ -17,7 +17,7 @@ namespace Orkaris_Back.Models.EntityFramework
         [InverseProperty(nameof(ExerciseGoal.ExerciseExerciseGoal))]
         public virtual ICollection<ExerciseGoal> ExerciseGoalExercice { get; set; } = new List<ExerciseGoal>();
         
-        [InverseProperty(nameof(ExerciseType.ExerciseExerciseType))]
-        public virtual ICollection<ExerciseType> ExerciseTypeExercise { get; set; } = new List<ExerciseType>();
+        [InverseProperty(nameof(ExerciseCategory.ExerciseExerciseCategory))]
+        public virtual ICollection<ExerciseCategory> ExerciseCategoryExercise { get; set; } = new List<ExerciseCategory>();
     }
 }

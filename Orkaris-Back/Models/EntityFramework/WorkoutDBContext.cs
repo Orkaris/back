@@ -18,9 +18,9 @@ namespace Orkaris_Back.Models.EntityFramework
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<ExerciseGoal> ExerciseGoals { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<Type> Types { get; set; }
+        public DbSet<Category> Categorys { get; set; }
         public DbSet<Session> Sessions { get; set; }
-        public DbSet<ExerciseType> ExerciseTypes { get; set; }
+        public DbSet<ExerciseCategory> ExerciseCategorys { get; set; }
         public DbSet<SessionPerformance> SessionPerformances { get; set; }
         public DbSet<ExerciseGoalPerformance> ExerciseGoalPerformances { get; set; }
         public DbSet<User> Users { get; set; }
@@ -94,20 +94,20 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(50).HasColumnName("spo_name");
 
                 // Navigation properties
-                entity.HasMany(e => e.TypeSport).WithOne(t => t.SportType).HasForeignKey(t => t.SportId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(e => e.CategorySport).WithOne(t => t.SportCategory).HasForeignKey(t => t.SportId).OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<Type>(entity =>
+            modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("t_e_type_tpe");
-                entity.HasKey(e => e.Id).HasName("PK_Type");
+                entity.HasKey(e => e.Id).HasName("PK_Category");
                 entity.Property(e => e.Id).HasColumnName("tpe_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("tpe_name");
                 entity.Property(e => e.SportId).IsRequired().HasColumnName("spo_id");
                 entity.Property(e => e.CreatedAt).HasColumnName("tpe_created_at");
                 
                 // Navigation properties
-                entity.HasOne(e => e.SportType).WithMany(s => s.TypeSport).HasForeignKey(e => e.SportId).OnDelete(DeleteBehavior.Cascade);
-                entity.HasMany(e => e.ExerciseTypeType).WithOne(et => et.TypeExerciseType).HasForeignKey(et => et.TypeId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.SportCategory).WithMany(s => s.CategorySport).HasForeignKey(e => e.SportId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(e => e.ExerciseCategoryCategory).WithOne(et => et.CategoryExerciseCategory).HasForeignKey(et => et.CategoryId).OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<SessionPerformance>(entity =>
             {
@@ -134,16 +134,16 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.HasOne(e => e.UserWorkout).WithMany(u => u.WorkoutUser).HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.SessionWorkout).WithOne(s => s.WorkoutSession).HasForeignKey(s => s.WorkoutId).OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<ExerciseType>(entity =>
+            modelBuilder.Entity<ExerciseCategory>(entity =>
             {
                 entity.ToTable("t_j_exercice_type_ext");
-                entity.HasKey(e => new { e.ExerciseId, e.TypeId }).HasName("PK_ExerciseType");
+                entity.HasKey(e => new { e.ExerciseId, e.CategoryId }).HasName("PK_ExerciseCategory");
                 entity.Property(e => e.ExerciseId).IsRequired().HasColumnName("exe_id");
-                entity.Property(e => e.TypeId).IsRequired().HasColumnName("tpe_id");
+                entity.Property(e => e.CategoryId).IsRequired().HasColumnName("tpe_id");
                 
                 // Navigation properties
-                entity.HasOne(e => e.TypeExerciseType).WithMany(ex => ex.ExerciseTypeType).HasForeignKey(e => e.ExerciseId).OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.ExerciseExerciseType).WithMany(t => t.ExerciseTypeExercise).HasForeignKey(e => e.TypeId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.CategoryExerciseCategory).WithMany(ex => ex.ExerciseCategoryCategory).HasForeignKey(e => e.ExerciseId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.ExerciseExerciseCategory).WithMany(t => t.ExerciseCategoryExercise).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<ExerciseGoalPerformance>(entity =>
             {
@@ -168,7 +168,7 @@ namespace Orkaris_Back.Models.EntityFramework
 
                 // Navigation properties
                 entity.HasMany(e => e.ExerciseGoalExercice).WithOne(eg => eg.ExerciseExerciseGoal).HasForeignKey(eg => eg.ExerciseId).OnDelete(DeleteBehavior.Cascade);
-                entity.HasMany(e => e.ExerciseTypeExercise).WithOne(et => et.ExerciseExerciseType).HasForeignKey(et => et.ExerciseId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(e => e.ExerciseCategoryExercise).WithOne(et => et.ExerciseExerciseCategory).HasForeignKey(et => et.ExerciseId).OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<ExerciseGoal>(entity =>
             {
