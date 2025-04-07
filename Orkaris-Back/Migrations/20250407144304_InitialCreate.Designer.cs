@@ -12,8 +12,8 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250407074144_AjoutUniqueIndex")]
-    partial class AjoutUniqueIndex
+    [Migration("20250407144304_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

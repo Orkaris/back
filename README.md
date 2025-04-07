@@ -7,7 +7,7 @@ Bienvenue dans le projet **Orkaris**. Ce dépôt contient le backend de l'applic
 1. Clonez ce dépôt :
 
     ```bash
-    git clone https://github.com/votre-utilisateur/Orkaris-Back.git
+    git clone https://github.com/Orkaris/back.git
     ```
 
 2. Accédez au répertoire du projet :
@@ -21,7 +21,7 @@ Bienvenue dans le projet **Orkaris**. Ce dépôt contient le backend de l'applic
 Pour démarrer le serveur en mode développement :
 
 ```bash
-docker compose up --build -d
+docker-compose up --build -d
 ```
 
 ## INFO API
@@ -34,3 +34,13 @@ Pour tester si l'API marche bien faite :
 ```bash
 curl -X 'GET' \ 'http://localhost:5000/weatherforecast' \ -H 'accept: application/json'
 ```
+
+
+Pour la base
+
+```bash
+docker exec -it orkaris-back /bin/bash -c "cd Orkaris-Back && ~/.dotnet/tools/dotnet-ef database update"
+```
+
+
+

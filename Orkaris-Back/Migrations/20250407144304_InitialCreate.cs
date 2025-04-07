@@ -42,7 +42,7 @@ namespace Orkaris_Back.Migrations
                 {
                     usr_id = table.Column<Guid>(type: "uuid", nullable: false),
                     usr_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    usr_email = table.Column<string>(type: "text", nullable: false),
+                    usr_email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     usr_password = table.Column<string>(type: "text", nullable: false),
                     usr_gender = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     usr_height = table.Column<int>(type: "integer", nullable: false),
@@ -235,6 +235,12 @@ namespace Orkaris_Back.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_t_e_Exercise_exr_exr_name",
+                table: "t_e_Exercise_exr",
+                column: "exr_name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_t_e_exercise_goal_exg_exr_id",
                 table: "t_e_exercise_goal_exg",
                 column: "exr_id");
@@ -260,9 +266,33 @@ namespace Orkaris_Back.Migrations
                 column: "wrk_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_t_e_sport_spo_spo_name",
+                table: "t_e_sport_spo",
+                column: "spo_name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_t_e_type_tpe_spo_id",
                 table: "t_e_type_tpe",
                 column: "spo_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_type_tpe_tpe_name",
+                table: "t_e_type_tpe",
+                column: "tpe_name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_user_usr_usr_email",
+                table: "t_e_user_usr",
+                column: "usr_email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_e_user_usr_usr_name",
+                table: "t_e_user_usr",
+                column: "usr_name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_t_e_Workout_pgr_usr_id",
