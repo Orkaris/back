@@ -47,7 +47,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.HasKey(e => e.Id).HasName("PK_User");
                 entity.Property(e => e.Id).HasColumnName("usr_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("usr_name");
-                entity.Property(e => e.Email).IsRequired().HasColumnName("usr_email");
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(255).HasColumnName("usr_email");
                 entity.Property(e => e.Password).IsRequired().HasColumnName("usr_password");
                 entity.Property(e => e.Gender).IsRequired().HasMaxLength(50).HasColumnName("usr_gender");
                 entity.Property(e => e.Height).IsRequired().HasColumnName("usr_height");
@@ -56,6 +56,8 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.ProfileType).IsRequired().HasColumnName("usr_profile_type");
                 entity.Property(e => e.CreatedAt).HasColumnName("usr_created_at");
 
+                entity.HasIndex(e => e.Name).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
                 // Navigation properties
                 entity.HasMany(e => e.WorkoutUser).WithOne(p => p.UserWorkout).HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.SessionUser).WithOne(s => s.UserSession).HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
@@ -93,6 +95,8 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.Id).HasColumnName("spo_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(50).HasColumnName("spo_name");
 
+                
+                entity.HasIndex(e => e.Name).IsUnique();
                 // Navigation properties
                 entity.HasMany(e => e.CategorySport).WithOne(t => t.SportCategory).HasForeignKey(t => t.SportId).OnDelete(DeleteBehavior.Cascade);
             });
@@ -105,6 +109,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.SportId).IsRequired().HasColumnName("spo_id");
                 entity.Property(e => e.CreatedAt).HasColumnName("tpe_created_at");
                 
+                entity.HasIndex(e => e.Name).IsUnique();
                 // Navigation properties
                 entity.HasOne(e => e.SportCategory).WithMany(s => s.CategorySport).HasForeignKey(e => e.SportId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.ExerciseCategoryCategory).WithOne(et => et.CategoryExerciseCategory).HasForeignKey(et => et.CategoryId).OnDelete(DeleteBehavior.Cascade);
@@ -166,6 +171,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("exr_name");
                 entity.Property(e => e.CreatedAt).HasColumnName("exr_created_at");
 
+                entity.HasIndex(e => e.Name).IsUnique();
                 // Navigation properties
                 entity.HasMany(e => e.ExerciseGoalExercice).WithOne(eg => eg.ExerciseExerciseGoal).HasForeignKey(eg => eg.ExerciseId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.ExerciseCategoryExercise).WithOne(et => et.ExerciseExerciseCategory).HasForeignKey(et => et.ExerciseId).OnDelete(DeleteBehavior.Cascade);

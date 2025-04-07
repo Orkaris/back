@@ -15,7 +15,7 @@ namespace Orkaris_Back.Models.EntityFramework
         [Required, EmailAddress, Column("usr_email")]
         public string Email { get; set; } = string.Empty;
 
-        [Required, MinLength(6), Column("usr_password")]
+        [Required, Column("usr_password")]
         public string Password { get; set; } = string.Empty;
 
         [Required, MaxLength(50), Column("usr_gender")]
