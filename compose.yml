@@ -1,15 +1,15 @@
 services:
   orkaris-back:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: orkaris-back:1.0.0
-    ports:
-      - "5000:5000"
-      - "5001:5001"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5000
+  build:
+  context: .
+  dockerfile: Dockerfile
+  image: orkaris-back:1.0.0
+  ports:
+    - "5000:5000"
+    - "5001:5001"
+  environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    - ASPNETCORE_URLS=http://+:5000
   postgres:
     image: postgres:latest
     environment:
@@ -21,7 +21,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-pgadmin4:
+  pgadmin4:
     image: elestio/pgadmin:latest
     restart: always
     environment:
