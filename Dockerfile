@@ -1,16 +1,12 @@
-# Build Stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /source
-COPY . .
-RUN dotnet restore "./Orkaris-Back/Orkaris-Back.csproj" --disable-parallel
-RUN dotnet publish "./Orkaris-Back/Orkaris-Back.csproj" -c release -o /app --no-restore
-
-# Serve Stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 WORKDIR /app
-COPY --from=build /app ./
+COPY . .
 
+# Restaure les dépendances
+RUN dotnet restore "./Orkaris-Back/Orkaris-Back.csproj"
+
+# Expose le port dev
 EXPOSE 5000
-EXPOSE 5001
 
-ENTRYPOINT ["dotnet", "Orkaris-Back.dll"]
+# Démarre en mode dev avec watch (hot reload)
+CMD ["dotnet", "watch", "--project", "Orkaris-Back", "run", "--urls", "http://0.0.0.0:5000"]
