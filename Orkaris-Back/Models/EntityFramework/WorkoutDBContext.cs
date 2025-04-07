@@ -30,7 +30,7 @@ namespace Orkaris_Back.Models.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=orkaris-back-postgres-1;Port=5432;Username=postgres;Password=postgres;Database=orkaris");
+                optionsBuilder.UseNpgsql("Host=postgres;Port=5432;Username=postgres;Password=postgres;Database=orkaris");
             }
         }
 

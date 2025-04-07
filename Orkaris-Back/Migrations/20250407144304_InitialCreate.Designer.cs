@@ -12,7 +12,7 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250407142618_InitialCreate")]
+    [Migration("20250407144304_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
