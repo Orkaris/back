@@ -39,7 +39,7 @@ curl -X 'GET' \ 'http://localhost:5000/weatherforecast' \ -H 'accept: applicatio
 Pour la base
 
 ```bash
-docker exec -it postgres /bin/bash -c "cd Orkaris-Back && ~/.dotnet/tools/dotnet-ef database update"
+docker exec -it orkaris-back /bin/bash -c "cd Orkaris-Back && ~/.dotnet/tools/dotnet-ef database update"
 ```
 
 
