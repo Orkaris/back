@@ -5,6 +5,10 @@ COPY . .
 # Restaure les dépendances
 RUN dotnet restore "./Orkaris-Back/Orkaris-Back.csproj"
 
+# Installe l'outil dotnet-ef
+RUN dotnet tool install --global dotnet-ef && \
+	export PATH="$PATH:/root/.dotnet/tools"
+
 # Applique les migrations à la base de données
 RUN dotnet ef database update --project "./Orkaris-Back/Orkaris-Back.csproj"
 
