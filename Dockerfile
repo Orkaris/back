@@ -5,6 +5,9 @@ COPY . .
 # Restaure les dépendances
 RUN dotnet restore "./Orkaris-Back/Orkaris-Back.csproj"
 
+# Applique les migrations à la base de données
+RUN dotnet ef database update --project "./Orkaris-Back/Orkaris-Back.csproj"
+
 # Expose le port dev
 EXPOSE 5000
 
