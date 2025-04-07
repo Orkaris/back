@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -27,17 +28,25 @@ namespace Orkaris_Back.Controllers
             _jwtService = jwtService;
         }
 
-        
+
         [Authorize]
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MinimalUserDTO>> GetUser(Guid id)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdFromToken == null || Guid.Parse(userIdFromToken) != id)
+            {
+                return Forbid();
+            }
+
             var user = await dataRepository.GetByIdAsync(id);
 
             if (user == null)
@@ -105,6 +114,31 @@ namespace Orkaris_Back.Controllers
             await dataRepository.AddAsync(user);
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<MinimalUserDTO>(user));
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutUser(Guid id, PutUserDTO userDTO)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingUser = await dataRepository.GetByIdAsync(id);
+            if (existingUser.Value == null)
+            {
+                return NotFound();
+            }
+
+            var user = _mapper.Map(userDTO, existingUser.Value);
+            await dataRepository.UpdateAsync(existingUser.Value, user);
+
+            return NoContent();
         }
     }
 }

@@ -11,5 +11,8 @@ public class MappingProfile: AutoMapper.Profile
         CreateMap<User, MinimalUserDTO>();
         CreateMap<User, LoginRequestDTO>();
         CreateMap<User, RegisterUserDTO>();
+        CreateMap<User, PutUserDTO>();
+        CreateMap<PutUserDTO, User>();
+            
     }
 }

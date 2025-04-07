@@ -19,4 +19,21 @@ public class MinimalUserDTO
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }
+public class PutUserDTO
+{
+    public string Name { get; set; } = string.Empty;
 
+    public string Email { get; set; } = string.Empty;
+
+    public string Gender { get; set; } = string.Empty;
+
+    public int Height { get; set; }
+
+    public int Weight { get; set; }
+    public DateTime BirthDate { get; set; }
+
+    public int ProfileType { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+}
