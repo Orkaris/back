@@ -34,3 +34,13 @@ Pour tester si l'API marche bien faite :
 ```bash
 curl -X 'GET' \ 'http://localhost:5000/weatherforecast' \ -H 'accept: application/json'
 ```
+
+
+Pour la base
+
+```bash
+docker exec -it orkaris-back-orkaris-back-1 /bin/bash -c "cd Orkaris-Back && ~/.dotnet/tools/dotnet-ef database update"
+```
+
+
+
