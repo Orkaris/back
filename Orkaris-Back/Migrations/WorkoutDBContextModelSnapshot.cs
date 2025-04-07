@@ -46,6 +46,9 @@ namespace Orkaris_Back.Migrations
                     b.HasKey("Id")
                         .HasName("PK_Category");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("SportId");
 
                     b.ToTable("t_e_type_tpe", (string)null);
@@ -70,6 +73,9 @@ namespace Orkaris_Back.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK_Exercise");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("t_e_Exercise_exr", (string)null);
                 });
@@ -254,6 +260,9 @@ namespace Orkaris_Back.Migrations
                     b.HasKey("Id")
                         .HasName("PK_Sport");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("t_e_sport_spo", (string)null);
                 });
 
@@ -274,7 +283,8 @@ namespace Orkaris_Back.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("usr_email");
 
                     b.Property<string>("Gender")
@@ -308,6 +318,12 @@ namespace Orkaris_Back.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK_User");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("t_e_user_usr", (string)null);
                 });
