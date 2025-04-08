@@ -1,10 +1,12 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+
 WORKDIR /app
 
-COPY . ./
-RUN dotnet restore "./Orkaris-Back/Orkaris-Back.csproj"
+COPY Orkaris-Back/*.csproj ./Orkaris-Back/
 
-RUN dotnet tool install --global dotnet-ef --version 8.0.0 # Spécifiez la version des outils EF Core
+RUN dotnet restore ./Orkaris-Back/Orkaris-Back.csproj
+
+COPY . .
 
 EXPOSE 5000
 
