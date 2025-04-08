@@ -27,17 +27,17 @@ namespace Orkaris_Back.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("tpe_id");
+                        .HasColumnName("cat_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("tpe_created_at");
+                        .HasColumnName("cat_created_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("tpe_name");
+                        .HasColumnName("cat_name");
 
                     b.Property<Guid>("SportId")
                         .HasColumnType("uuid")
@@ -51,7 +51,40 @@ namespace Orkaris_Back.Migrations
 
                     b.HasIndex("SportId");
 
-                    b.ToTable("t_e_type_tpe", (string)null);
+                    b.ToTable("t_e_category_cat", (string)null);
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.EmailConfirmationToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("ect_id");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ect_expiration_date");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ect_is_used");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("ect_token");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("usr_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_EmailConfirmationToken");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("t_email_confirmation_tokens_ect", (string)null);
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Exercise", b =>
@@ -64,6 +97,12 @@ namespace Orkaris_Back.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("exr_created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)")
+                        .HasColumnName("exr_description");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -88,12 +127,12 @@ namespace Orkaris_Back.Migrations
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid")
-                        .HasColumnName("tpe_id");
+                        .HasColumnName("cat_id");
 
                     b.HasKey("ExerciseId", "CategoryId")
                         .HasName("PK_ExerciseCategory");
 
-                    b.ToTable("t_j_exercice_type_ext", (string)null);
+                    b.ToTable("t_j_exercise_category_ext", (string)null);
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseGoal", b =>
@@ -110,12 +149,6 @@ namespace Orkaris_Back.Migrations
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid")
                         .HasColumnName("exr_id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("exg_name");
 
                     b.Property<int>("Reps")
                         .HasColumnType("integer")
@@ -297,6 +330,10 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("usr_height");
 
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("boolean")
+                        .HasColumnName("usr_is_verified");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -366,6 +403,17 @@ namespace Orkaris_Back.Migrations
                         .IsRequired();
 
                     b.Navigation("SportCategory");
+                });
+
+            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.EmailConfirmationToken", b =>
+                {
+                    b.HasOne("Orkaris_Back.Models.EntityFramework.User", "UserEmail")
+                        .WithMany("EmailUser")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserEmail");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.ExerciseCategory", b =>
@@ -502,6 +550,8 @@ namespace Orkaris_Back.Migrations
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.User", b =>
                 {
+                    b.Navigation("EmailUser");
+
                     b.Navigation("SessionUser");
 
                     b.Navigation("WorkoutUser");
