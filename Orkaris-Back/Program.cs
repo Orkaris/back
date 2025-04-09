@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 //JWT
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.Configure<SMTPService>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
