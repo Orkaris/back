@@ -9,10 +9,14 @@ public class MappingProfile: AutoMapper.Profile
     public MappingProfile()
     {
         CreateMap<User, MinimalUserDTO>();
+        CreateMap<User, InfoUserDTO>();
         CreateMap<User, LoginRequestDTO>();
         CreateMap<User, RegisterUserDTO>();
         CreateMap<User, PutUserDTO>();
         CreateMap<PutUserDTO, User>();
+
+
+        CreateMap<Workout, WorkoutDTO>();
             
     }
 }

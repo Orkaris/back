@@ -8,9 +8,6 @@ namespace Orkaris_Back.Models.EntityFramework
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("exg_id")]
         public Guid Id { get; set; }
-        [Required, MaxLength(100), Column("exg_name")]
-        public string Name { get; set; } = string.Empty;
-        
         [Column("exg_reps")]
         public int Reps { get; set; }
         [Column("exg_sets")]

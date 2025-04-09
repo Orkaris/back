@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Orkaris_Back.Models.EntityFramework
 {
-    [Table("t_j_exercice_category_exc")]
+    [Table("t_j_exercise_category_exc")]
     public class ExerciseCategory
     {
         [Required, Column("exe_id")]

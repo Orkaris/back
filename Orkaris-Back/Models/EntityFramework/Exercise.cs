@@ -10,6 +10,8 @@ namespace Orkaris_Back.Models.EntityFramework
         public Guid Id { get; set; }
         [Required, MaxLength(100), Column("exr_name")]
         public string Name { get; set; } = string.Empty;
+        [MaxLength(400), Column("exr_description")]
+        public string Description { get; set; } = string.Empty;
         [Column("exr_created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
