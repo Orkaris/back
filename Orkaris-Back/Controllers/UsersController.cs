@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Orkaris_Back.Models.DataManager;
 using Orkaris_Back.Models.DTO;
 using Orkaris_Back.Models.EntityFramework;
 using Orkaris_Back.Models.Repository;
@@ -17,15 +18,19 @@ namespace Orkaris_Back.Controllers
     public class UsersController : ControllerBase
     {
 
-        private readonly IDataRepositoryUser dataRepository;
+        private readonly IDataRepositoryString<User> dataRepository;
+        private readonly IDataRepositoryString<EmailConfirmationToken> dataRepositoryEmail;
         private readonly IMapper _mapper;
         private readonly JwtService _jwtService;
+        private readonly EmailService _emailService;
 
-        public UsersController(IDataRepositoryUser dataRepository, IMapper mapper, JwtService jwtService)
+        public UsersController(IDataRepositoryString<User> dataRepository, IMapper mapper, JwtService jwtService, IDataRepositoryString<EmailConfirmationToken> dataRepositoryEmail, EmailService emailService)
         {
+            this.dataRepositoryEmail = dataRepositoryEmail;
             this.dataRepository = dataRepository;
             _mapper = mapper;
             _jwtService = jwtService;
+            _emailService = emailService;
         }
 
 
@@ -33,7 +38,7 @@ namespace Orkaris_Back.Controllers
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MinimalUserDTO>> GetUser(Guid id)
+        public async Task<ActionResult<InfoUserDTO>> GetUser(Guid id)
         {
 
             if (!ModelState.IsValid)
@@ -54,7 +59,7 @@ namespace Orkaris_Back.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<MinimalUserDTO>(user.Value);
+            return _mapper.Map<InfoUserDTO>(user.Value);
         }
 
 
@@ -72,11 +77,7 @@ namespace Orkaris_Back.Controllers
             }
             var user = await dataRepository.GetByStringAsync(request.Email);
 
-            if (user.Value == null)
-            {
-                return Unauthorized("User not found");
-            }
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Value?.Password))
+            if (user.Value == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Value?.Password))
             {
                 return Unauthorized("Invalid credentials");
             }
@@ -110,8 +111,30 @@ namespace Orkaris_Back.Controllers
                 Email = request.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
             };
-
             await dataRepository.AddAsync(user);
+
+
+            var token = Guid.NewGuid().ToString();
+            var emailConfirmationToken = new EmailConfirmationToken
+            {
+                Token = token,
+                UserId = user.Id,
+                ExpirationDate = DateTime.UtcNow.AddDays(1)
+            };
+            await dataRepositoryEmail.AddAsync(emailConfirmationToken);
+            var confirmationLink = Url.Action(nameof(EmailController.VerifyEmail), "Email", new { token }, Request.Scheme);
+            var emailContent = $@"
+                <html>
+                    <body>
+                        <h1>Welcome to Orkaris!</h1>
+                        <p>Thank you for registering. Please confirm your email address by clicking the link below:</p>
+                        <a href='{confirmationLink}' style='color: #fff; background-color: #007bff; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Confirm Email</a>
+                        <p>If you did not register for Orkaris, please ignore this email.</p>
+                        <p>Best regards,<br/>The Orkaris Team</p>
+                    </body>
+                </html>";
+            var emailSubject = "Email Confirmation";
+            await _emailService.SendEmailAsync(user.Email, emailSubject, emailContent);
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<MinimalUserDTO>(user));
         }
@@ -137,6 +160,33 @@ namespace Orkaris_Back.Controllers
 
             var user = _mapper.Map(userDTO, existingUser.Value);
             await dataRepository.UpdateAsync(existingUser.Value, user);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdFromToken == null || Guid.Parse(userIdFromToken) != id)
+            {
+                return Forbid();
+            }
+            var existingUser = await dataRepository.GetByIdAsync(id);
+            if (existingUser.Value == null || existingUser.Value.Id != id)
+            {
+                return NotFound();
+            }
+
+            await dataRepository.DeleteAsync(existingUser.Value);
 
             return NoContent();
         }

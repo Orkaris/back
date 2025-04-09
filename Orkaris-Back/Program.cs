@@ -7,11 +7,13 @@ using Orkaris_Back.Mapping;
 using Orkaris_Back.Models.DataManager;
 using Orkaris_Back.Models.EntityFramework;
 using Orkaris_Back.Models.Repository;
+using Orkaris_Back.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //JWT
-builder.Services.AddScoped<Orkaris_Back.Services.JwtService>();
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -34,7 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 //Data Mangers
-builder.Services.AddScoped<IDataRepositoryUser, UserManager>();
+builder.Services.AddScoped<IDataRepositoryString<User>, UserManager>();
 builder.Services.AddScoped<IDataRepository<Category>, CategoryManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseGoal>, ExerciseGoalManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseGoalPerformance>, ExerciseGoalPerformanceManager>();
@@ -45,6 +47,7 @@ builder.Services.AddScoped<IDataRepository<Session>, SessionManager>();
 builder.Services.AddScoped<IDataRepository<SessionPerformance>, SessionPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Sport>, SportManager>();
 builder.Services.AddScoped<IDataRepository<Workout>, WorkoutManager>();
+builder.Services.AddScoped<IDataRepositoryString<EmailConfirmationToken>, EmailManager>();
 
 
 

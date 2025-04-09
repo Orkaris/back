@@ -32,6 +32,9 @@ namespace Orkaris_Back.Models.EntityFramework
         [Required, Range(1, 3), Column("usr_profile_type")]
         public int ProfileType { get; set; }
 
+        [Required, Column("usr_is_verified")]
+        public bool IsVerified { get; set; } = false;
+
         [Column("usr_created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -42,5 +45,8 @@ namespace Orkaris_Back.Models.EntityFramework
 
         [InverseProperty(nameof(Session.UserSession))]
         public virtual ICollection<Session> SessionUser { get; set; } = new List<Session>();
+
+        [InverseProperty(nameof(EmailConfirmationToken.UserEmail))]
+        public virtual ICollection<EmailConfirmationToken> EmailUser { get; set; } = new List<EmailConfirmationToken>();
     }
 }

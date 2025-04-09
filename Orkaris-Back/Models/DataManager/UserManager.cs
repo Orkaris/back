@@ -6,7 +6,7 @@ using Orkaris_Back.Models.Repository;
 
 namespace Orkaris_Back.Models.DataManager;
 
-public class UserManager : IDataRepositoryUser
+public class UserManager : IDataRepositoryString<User>
 {
     private readonly WorkoutDBContext _context;
 

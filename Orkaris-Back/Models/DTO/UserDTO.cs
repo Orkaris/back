@@ -35,5 +35,25 @@ public class PutUserDTO
     public int ProfileType { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+public class InfoUserDTO
+{
+    public Guid Id { get; set; }
 
+    public string Name { get; set; } = string.Empty;
+
+    public string Email { get; set; } = string.Empty;
+
+    public string Gender { get; set; } = string.Empty;
+
+    public int Height { get; set; }
+
+    public int Weight { get; set; }
+    public DateTime BirthDate { get; set; }
+
+    public int ProfileType { get; set; }
+
+    public bool IsVerified { get; set; } = false;
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

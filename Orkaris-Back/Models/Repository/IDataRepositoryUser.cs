@@ -4,7 +4,7 @@ using Orkaris_Back.Models.EntityFramework;
 
 namespace Orkaris_Back.Models.Repository;
 
-public interface IDataRepositoryUser : IDataRepository<User>
+public interface IDataRepositoryString<T> : IDataRepository<T>
 {
-   Task<ActionResult<User>> GetByStringAsync(string str);
+   Task<ActionResult<T>> GetByStringAsync(string str);
 }
