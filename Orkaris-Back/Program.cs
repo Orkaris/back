@@ -48,7 +48,7 @@ builder.Services.AddScoped<IDataRepository<SessionExercise>, SessionExerciseMana
 builder.Services.AddScoped<IDataRepository<Session>, SessionManager>();
 builder.Services.AddScoped<IDataRepository<SessionPerformance>, SessionPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Sport>, SportManager>();
-builder.Services.AddScoped<IDataRepository<Workout>, WorkoutManager>();
+builder.Services.AddScoped<IDataRepositoryGetAllById<Workout>, WorkoutManager>();
 builder.Services.AddScoped<IDataRepositoryString<EmailConfirmationToken>, EmailManager>();
 
 

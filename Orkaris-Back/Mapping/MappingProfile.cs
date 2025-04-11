@@ -17,6 +17,8 @@ public class MappingProfile: AutoMapper.Profile
 
 
         CreateMap<Workout, WorkoutDTO>();
+        CreateMap<Workout, PostWorkoutDTO>();
+        CreateMap<PostWorkoutDTO, Workout>();
             
     }
 }
