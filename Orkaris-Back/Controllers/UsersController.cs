@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Orkaris_Back.Attribute;
 using Orkaris_Back.Models.DataManager;
 using Orkaris_Back.Models.DTO;
 using Orkaris_Back.Models.EntityFramework;
@@ -35,23 +36,12 @@ namespace Orkaris_Back.Controllers
 
 
         [Authorize]
+        [AuthorizeUserMatch]
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<InfoUserDTO>> GetUser(Guid id)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdFromToken == null || Guid.Parse(userIdFromToken) != id)
-            {
-                return Forbid();
-            }
-
             var user = await dataRepository.GetByIdAsync(id);
 
             if (user == null)
@@ -71,18 +61,15 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(LoginRequestDTO request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var user = await dataRepository.GetByStringAsync(request.Email);
+
+            var user = await dataRepository.GetByStringAsync(request.Email!);
 
 
             if (user.Value == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Value?.Password))
             {
                 return Unauthorized("Invalid credentials");
             }
-            if (!user.Value.IsVerified)
+            if (!user.Value!.IsVerified)
             {
                 return BadRequest("Email not verified");
             }
@@ -100,10 +87,6 @@ namespace Orkaris_Back.Controllers
         public async Task<IActionResult> Register(RegisterUserDTO request)
         {
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var existingUser = await dataRepository.GetByStringAsync(request.Email);
             if (existingUser.Value != null)
             {
