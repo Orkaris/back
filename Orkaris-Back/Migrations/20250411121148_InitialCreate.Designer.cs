@@ -12,8 +12,8 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250408100218_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250411121148_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -309,8 +309,8 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("usr_id");
 
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("BirthDate")
+                        .HasColumnType("date")
                         .HasColumnName("usr_birth_date");
 
                     b.Property<DateTime>("CreatedAt")

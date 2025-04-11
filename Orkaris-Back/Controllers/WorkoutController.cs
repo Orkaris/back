@@ -26,7 +26,7 @@ namespace Orkaris_Back.Controllers
             _mapper = mapper;
             _jwtService = jwtService;
         }
-        [Authorize]
+        // [Authorize]
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

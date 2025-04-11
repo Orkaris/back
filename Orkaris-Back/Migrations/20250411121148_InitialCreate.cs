@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Orkaris_Back.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,7 @@ namespace Orkaris_Back.Migrations
                     usr_gender = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     usr_height = table.Column<int>(type: "integer", nullable: false),
                     usr_weight = table.Column<int>(type: "integer", nullable: false),
-                    usr_birth_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    usr_birth_date = table.Column<DateOnly>(type: "date", nullable: false),
                     usr_profile_type = table.Column<int>(type: "integer", nullable: false),
                     usr_is_verified = table.Column<bool>(type: "boolean", nullable: false),
                     usr_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
