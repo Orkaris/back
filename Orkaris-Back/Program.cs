@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Orkaris_Back.Converter;
 using Orkaris_Back.Mapping;
 using Orkaris_Back.Models.DataManager;
 using Orkaris_Back.Models.EntityFramework;
@@ -53,7 +54,12 @@ builder.Services.AddScoped<IDataRepositoryString<EmailConfirmationToken>, EmailM
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    });
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WorkoutDBContext>(options =>

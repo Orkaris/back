@@ -77,15 +77,20 @@ namespace Orkaris_Back.Controllers
             }
             var user = await dataRepository.GetByStringAsync(request.Email);
 
+
             if (user.Value == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Value?.Password))
             {
                 return Unauthorized("Invalid credentials");
+            }
+            if (!user.Value.IsVerified)
+            {
+                return BadRequest("Email not verified");
             }
 
 
             var token = _jwtService.GenerateToken(user.Value!);
 
-            return Ok(new { response = "success", token });
+            return Ok(new { user.Value.Id, token });
         }
 
         [AllowAnonymous]

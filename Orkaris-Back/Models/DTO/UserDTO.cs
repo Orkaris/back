@@ -30,11 +30,10 @@ public class PutUserDTO
     public int Height { get; set; }
 
     public int Weight { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateOnly BirthDate { get; set; }
 
     public int ProfileType { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 public class InfoUserDTO
 {
@@ -49,7 +48,7 @@ public class InfoUserDTO
     public int Height { get; set; }
 
     public int Weight { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateOnly BirthDate { get; set; }
 
     public int ProfileType { get; set; }
 
