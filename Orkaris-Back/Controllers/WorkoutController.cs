@@ -19,23 +19,38 @@ namespace Orkaris_Back.Controllers
     {
         private readonly IDataRepositoryGetAllById<Workout> dataRepository;
         private readonly IMapper _mapper;
-        private readonly JwtService _jwtService;
 
-        public WorkoutController(IDataRepositoryGetAllById<Workout> dataRepository, IMapper mapper, JwtService jwtService)
+        public WorkoutController(IDataRepositoryGetAllById<Workout> dataRepository, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
-            _jwtService = jwtService;
         }
         [Authorize]
         [AuthorizeUserMatch]
         [HttpGet("ByUserId/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<WorkoutDTO>>> GetWorkout(Guid id)
+        public async Task<ActionResult<IEnumerable<WorkoutDTO>>> GetWorkouts(Guid id)
         {
 
             return Ok(_mapper.Map<IEnumerable<WorkoutDTO>>((await dataRepository.GetAllByIdAsync(id)).Value));
+        }
+
+        [Authorize]
+        [AuthorizeUserMatch("userId")]
+        [HttpGet("ById/{id}/ByUserId/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<WorkoutDTO>> GetWorkoutById(Guid id, Guid userId)
+        {
+            var workout = await dataRepository.GetByIdAsync(id);
+
+            if (workout == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<WorkoutDTO>(workout.Value);
         }
 
         [AllowAnonymous]
@@ -43,13 +58,13 @@ namespace Orkaris_Back.Controllers
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<WorkoutDTO>> PostWorkout(Guid userId, PostWorkoutDTO workoutDTO)
+        public async Task<ActionResult<WorkoutDTO>> GetWorkout(Guid userId, PostWorkoutDTO workoutDTO)
         {
             var workout = _mapper.Map<Workout>(workoutDTO);
             workout.UserId = userId;
             await dataRepository.AddAsync(workout);
 
-            return CreatedAtAction(nameof(GetWorkout), new { id = workout.Id }, _mapper.Map<WorkoutDTO>(workout));
+            return CreatedAtAction(nameof(GetWorkoutById), new { id = workout.Id, userId = workout.UserId}, _mapper.Map<WorkoutDTO>(workout));
         }
 
     }
