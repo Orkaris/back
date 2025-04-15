@@ -26,7 +26,7 @@ namespace Orkaris_Back.Models.EntityFramework
 
         [Required, Range(0, 300), Column("usr_weight")]
         public int Weight { get; set; }
-        [Required, Column("usr_birth_date")]
+        [Column("usr_birth_date")]
         public DateOnly BirthDate { get; set; }
 
         [Required, Range(1, 3), Column("usr_profile_type")]

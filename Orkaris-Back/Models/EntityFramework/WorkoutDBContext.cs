@@ -53,7 +53,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.Gender).IsRequired().HasMaxLength(50).HasColumnName("usr_gender");
                 entity.Property(e => e.Height).IsRequired().HasColumnName("usr_height");
                 entity.Property(e => e.Weight).IsRequired().HasColumnName("usr_weight");
-                entity.Property(e => e.BirthDate).IsRequired().HasColumnName("usr_birth_date");
+                entity.Property(e => e.BirthDate).HasColumnName("usr_birth_date");
                 entity.Property(e => e.ProfileType).IsRequired().HasColumnName("usr_profile_type");
                 entity.Property(e => e.IsVerified).IsRequired().HasColumnName("usr_is_verified");
                 entity.Property(e => e.CreatedAt).HasColumnName("usr_created_at");
