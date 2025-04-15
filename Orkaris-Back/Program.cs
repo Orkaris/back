@@ -45,7 +45,7 @@ builder.Services.AddScoped<IDataRepository<ExerciseGoalPerformance>, ExerciseGoa
 builder.Services.AddScoped<IDataRepository<Exercise>, ExerciseManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseCategory>, ExerciseCategoryManager>();
 builder.Services.AddScoped<IDataRepository<SessionExercise>, SessionExerciseManager>();
-builder.Services.AddScoped<IDataRepository<Session>, SessionManager>();
+builder.Services.AddScoped<IDataRepositoryGetAllById<Session>, SessionManager>();
 builder.Services.AddScoped<IDataRepository<SessionPerformance>, SessionPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Sport>, SportManager>();
 builder.Services.AddScoped<IDataRepositoryGetAllById<Workout>, WorkoutManager>();
