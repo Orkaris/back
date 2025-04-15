@@ -53,7 +53,7 @@ namespace Orkaris_Back.Controllers
             return _mapper.Map<WorkoutDTO>(workout.Value);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("{userId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -64,7 +64,25 @@ namespace Orkaris_Back.Controllers
             workout.UserId = userId;
             await dataRepository.AddAsync(workout);
 
-            return CreatedAtAction(nameof(GetWorkoutById), new { id = workout.Id, userId = workout.UserId}, _mapper.Map<WorkoutDTO>(workout));
+            return CreatedAtAction(nameof(GetWorkoutById), new { id = workout.Id, userId = workout.UserId }, _mapper.Map<WorkoutDTO>(workout));
+        }
+
+
+        [Authorize]
+        [HttpDelete("{id}/{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteWorkout(Guid id, Guid userId)
+        {
+            var workout = await dataRepository.GetByIdAsync(id);
+            if (workout.Value == null)
+            {
+                return NotFound();
+            }
+
+            await dataRepository.DeleteAsync(workout.Value!);
+
+            return NoContent();
         }
 
     }
