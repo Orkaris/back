@@ -13,3 +13,4 @@ public class PostWorkoutDTO
 {
     public string Name { get; set; } = string.Empty;
 }
+
