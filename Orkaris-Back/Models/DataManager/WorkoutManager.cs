@@ -47,7 +47,7 @@ public class WorkoutManager : IDataRepositoryGetAllById<Workout>
 
     public async Task<ActionResult<IEnumerable<Workout>>> GetAllByIdAsync(Guid id)
     {
-        return new ActionResult<IEnumerable<Workout>>(await _context.Workouts.Where(w => w.UserId == id).ToListAsync());       
+        return new ActionResult<IEnumerable<Workout>>(await _context.Workouts.Where(w => w.UserId == id).ToListAsync());
     }
 
 }
