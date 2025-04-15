@@ -6,7 +6,7 @@ using Orkaris_Back.Models.Repository;
 
 namespace Orkaris_Back.Models.DataManager;
 
-public class SessionManager : IDataRepository<Session>
+public class SessionManager : IDataRepositoryGetAllById<Session>
 {
     private readonly WorkoutDBContext _context;
 
@@ -43,5 +43,10 @@ public class SessionManager : IDataRepository<Session>
     {
         _context.Sessions.Remove(entity);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<ActionResult<IEnumerable<Session>>> GetAllByIdAsync(Guid id)
+    {
+        return new ActionResult<IEnumerable<Session>>(await _context.Sessions.Where(w => w.WorkoutId == id).ToListAsync());       
     }
 }
