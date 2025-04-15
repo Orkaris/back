@@ -15,10 +15,13 @@ public class MappingProfile: AutoMapper.Profile
         CreateMap<User, PutUserDTO>();
         CreateMap<PutUserDTO, User>();
 
-
         CreateMap<Workout, WorkoutDTO>();
         CreateMap<Workout, PostWorkoutDTO>();
         CreateMap<PostWorkoutDTO, Workout>();
+
+        CreateMap<Session, SessionDTO>();
+        CreateMap<Session, PostSessionDTO>();
+        CreateMap<PostSessionDTO, Session>();
             
     }
 }
