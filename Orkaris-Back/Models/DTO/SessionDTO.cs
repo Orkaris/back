@@ -17,3 +17,12 @@ public class PostSessionDTO
 {
     public string Name { get; set; } = string.Empty;
 }
+
+public class SessionWorkoutDTO
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+    public Guid WorkoutId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}

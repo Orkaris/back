@@ -1,17 +1,4 @@
 services:
-  orkaris-back:
-    restart: always
-    container_name: orkaris-back
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: orkaris-back:1.0.0
-    ports:
-      - "5000:5000"
-      - "5001:5001"
-    environment:
-    - ASPNETCORE_ENVIRONMENT=Development
-    - ASPNETCORE_URLS=http://+:5000
   postgres:
     restart: always
     container_name: postgres
@@ -24,19 +11,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  pgadmin4:
-    container_name: pgadmin4
-    image: elestio/pgadmin:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: password
-      PGADMIN_LISTEN_PORT: 8080
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./servers.json:/pgadmin4/servers.json
 
 volumes:
   postgres_data:

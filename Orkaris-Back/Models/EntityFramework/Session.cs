@@ -15,8 +15,12 @@ namespace Orkaris_Back.Models.EntityFramework
 
         [Required, Column("usr_id")]
         public Guid UserId { get; set; }
+
         [Required, Column("wrk_id")]
         public Guid WorkoutId { get; set; }
+        
+        [Required, Column("ses_duration")]
+        public TimeSpan Duration { get; set; } = TimeSpan.Zero;
 
         [Required, Column("ses_created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

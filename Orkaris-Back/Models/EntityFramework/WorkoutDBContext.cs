@@ -71,6 +71,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.HasKey(e => e.Id).HasName("PK_Session");
                 entity.Property(e => e.Id).HasColumnName("ses_id");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("ses_name");
+                entity.Property(e => e.Duration).IsRequired().HasColumnName("ses_duration");
                 entity.Property(e => e.UserId).IsRequired().HasColumnName("usr_id");
                 entity.Property(e => e.CreatedAt).IsRequired().HasColumnName("ses_created_at");
 

@@ -208,6 +208,10 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ses_created_at");
 
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("interval")
+                        .HasColumnName("ses_duration");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)

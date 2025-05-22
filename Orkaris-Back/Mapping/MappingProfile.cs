@@ -22,6 +22,7 @@ public class MappingProfile: AutoMapper.Profile
         CreateMap<Session, SessionDTO>();
         CreateMap<Session, PostSessionDTO>();
         CreateMap<PostSessionDTO, Session>();
+        CreateMap<Session, SessionWorkoutDTO>();
             
     }
 }

@@ -15,15 +15,17 @@ namespace Orkaris_Back.Controllers
     public class SessionController : ControllerBase
     {
         private readonly IDataRepositoryGetAllById<Session> dataRepository;
+        private readonly IDataRepositoryGetAllById<Exercise> dataRepositoryExercise;
         private readonly IMapper _mapper;
 
-        public SessionController(IDataRepositoryGetAllById<Session> dataRepository, IMapper mapper)
+        public SessionController(IDataRepositoryGetAllById<Session> dataRepository,IDataRepositoryGetAllById<Exercise> dataRepositoryExercise, IMapper mapper)
         {
             this.dataRepository = dataRepository;
+            this.dataRepositoryExercise = dataRepositoryExercise;
             _mapper = mapper;
         }
         [Authorize]
-        [HttpGet("ByUserId/{id}/BySessionId/{workoutId}")]
+        [HttpGet("ByUserId/{id}/ByWorkoutId/{workoutId}")]
         [AuthorizeUserMatch]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,14 +40,15 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<SessionDTO>> GetSessionById(Guid id, Guid userId)
         {
-            var workout = await dataRepository.GetByIdAsync(id);
+            var session = await dataRepository.GetByIdAsync(id);
+            await dataRepositoryExercise.GetAllByIdAsync(id);
 
-            if (workout == null)
+            if (session == null)
             {
                 return NotFound();
             }
 
-            return _mapper.Map<SessionDTO>(workout.Value);
+            return _mapper.Map<SessionDTO>(session.Value);
         }
 
         [AllowAnonymous]
@@ -61,6 +64,45 @@ namespace Orkaris_Back.Controllers
             await dataRepository.AddAsync(Session);
 
             return CreatedAtAction(nameof(GetSessionById), new { id = Session.Id, userId = Session.UserId }, _mapper.Map<SessionDTO>(Session));
+        }
+
+        
+        [Authorize]
+        [HttpDelete("{id}/{userId}")]
+        [AuthorizeUserMatch("userId")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteSession(Guid id, Guid userId)
+        {
+            var session = await dataRepository.GetByIdAsync(id);
+            if (session.Value == null)
+            {
+                return NotFound();
+            }
+
+            await dataRepository.DeleteAsync(session.Value!);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("{id}/{userId}")]
+        [AuthorizeUserMatch("userId")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutSession(Guid id, PostSessionDTO sessionDTO, Guid userId)
+        {
+            var existingSession = await dataRepository.GetByIdAsync(id);
+            if (existingSession.Value == null)
+            {
+                return NotFound();
+            }
+
+            var session = _mapper.Map(sessionDTO, existingSession.Value);
+            await dataRepository.UpdateAsync(existingSession.Value, session);
+
+            return NoContent();
         }
 
 

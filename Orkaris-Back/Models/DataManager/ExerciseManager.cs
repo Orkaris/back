@@ -44,4 +44,5 @@ public class ExerciseManager : IDataRepository<Exercise>
         _context.Exercises.Remove(entity);
         await _context.SaveChangesAsync();
     }
+
 }

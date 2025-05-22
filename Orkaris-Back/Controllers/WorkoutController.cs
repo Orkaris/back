@@ -18,11 +18,13 @@ namespace Orkaris_Back.Controllers
     public class WorkoutController : ControllerBase
     {
         private readonly IDataRepositoryGetAllById<Workout> dataRepository;
+        private readonly IDataRepositoryGetAllById<Session> dataRepositorySession;
         private readonly IMapper _mapper;
 
-        public WorkoutController(IDataRepositoryGetAllById<Workout> dataRepository, IMapper mapper)
+        public WorkoutController(IDataRepositoryGetAllById<Workout> dataRepository, IDataRepositoryGetAllById<Session> dataRepositorySession, IMapper mapper)
         {
             this.dataRepository = dataRepository;
+            this.dataRepositorySession = dataRepositorySession;
             _mapper = mapper;
         }
         [Authorize]
@@ -44,6 +46,8 @@ namespace Orkaris_Back.Controllers
         public async Task<ActionResult<WorkoutDTO>> GetWorkoutById(Guid id, Guid userId)
         {
             var workout = await dataRepository.GetByIdAsync(id);
+
+            await dataRepositorySession.GetAllByIdAsync(id);
 
             if (workout == null)
             {
@@ -95,6 +99,7 @@ namespace Orkaris_Back.Controllers
         public async Task<IActionResult> PutWorkout(Guid id, PostWorkoutDTO workoutDTO, Guid userId)
         {
             var existingWorkout = await dataRepository.GetByIdAsync(id);
+
             if (existingWorkout.Value == null)
             {
                 return NotFound();
