@@ -52,7 +52,7 @@ namespace Orkaris_Back.Controllers
 
         
         [Authorize]
-        [HttpDelete("{id}/{userId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteExercise(Guid id)
@@ -69,7 +69,7 @@ namespace Orkaris_Back.Controllers
         }
 
         [Authorize]
-        [HttpPut("{id}/{userId}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
