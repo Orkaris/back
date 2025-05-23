@@ -6,7 +6,7 @@ using Orkaris_Back.Models.Repository;
 
 namespace Orkaris_Back.Models.DataManager;
 
-public class SessionExerciseManager : IDataRepository<SessionExercise>
+public class SessionExerciseManager : IDataRepositoryInterTable<SessionExercise>
 {
     private readonly WorkoutDBContext _context;
 
@@ -20,9 +20,9 @@ public class SessionExerciseManager : IDataRepository<SessionExercise>
         return new ActionResult<IEnumerable<SessionExercise>>(await _context.SessionExercises.ToListAsync());
     }
 
-    public async Task<ActionResult<SessionExercise>> GetByIdAsync(Guid id)
+    public async Task<ActionResult<SessionExercise>> GetByIdAsync(Guid sessionId)
     {
-        var SessionExercise = await _context.SessionExercises.FindAsync(id);
+        var SessionExercise = await _context.SessionExercises.FirstOrDefaultAsync(w => w.SessionId == sessionId);
         if (SessionExercise == null) return new NotFoundResult();
         return new ActionResult<SessionExercise>(SessionExercise);
     }
@@ -43,5 +43,18 @@ public class SessionExerciseManager : IDataRepository<SessionExercise>
     {
         _context.SessionExercises.Remove(entity);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<ActionResult<SessionExercise>> GetByIds(Guid sessionId, Guid exerciseId)
+    {
+        var sessionExercise = await _context.SessionExercises.FirstOrDefaultAsync(w => w.SessionId == sessionId && w.ExerciseId == exerciseId);
+        if (sessionExercise == null)
+            return new NotFoundResult();
+        return new ActionResult<SessionExercise>(sessionExercise);
+    }
+
+    public async Task<ActionResult<IEnumerable<SessionExercise>>> GetAllByIdAsync(Guid sessionId)
+    {
+        return new ActionResult<IEnumerable<SessionExercise>>(await _context.SessionExercises.Where(w => w.SessionId == sessionId).ToListAsync());
     }
 }

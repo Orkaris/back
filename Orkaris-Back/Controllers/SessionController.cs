@@ -15,16 +15,16 @@ namespace Orkaris_Back.Controllers
     public class SessionController : ControllerBase
     {
         private readonly IDataRepositoryGetAllById<Session> dataRepository;
-        private readonly IDataRepositoryGetAllById<Exercise> dataRepositoryExercise;
+        private readonly IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise;
         private readonly IMapper _mapper;
 
-        public SessionController(IDataRepositoryGetAllById<Session> dataRepository,IDataRepositoryGetAllById<Exercise> dataRepositoryExercise, IMapper mapper)
+        public SessionController(IDataRepositoryGetAllById<Session> dataRepository,IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise, IMapper mapper)
         {
             this.dataRepository = dataRepository;
-            this.dataRepositoryExercise = dataRepositoryExercise;
+            this.dataRepositorySessionExercise = dataRepositorySessionExercise;
             _mapper = mapper;
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("ByUserId/{id}/ByWorkoutId/{workoutId}")]
         [AuthorizeUserMatch]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -33,7 +33,7 @@ namespace Orkaris_Back.Controllers
         {
             return Ok(_mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync(workoutId)).Value));
         }
-        [Authorize]
+        //[Authorize]
         [AuthorizeUserMatch("userId")]
         [HttpGet("ById/{id}/ByUserId/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -41,7 +41,7 @@ namespace Orkaris_Back.Controllers
         public async Task<ActionResult<SessionDTO>> GetSessionById(Guid id, Guid userId)
         {
             var session = await dataRepository.GetByIdAsync(id);
-            await dataRepositoryExercise.GetAllByIdAsync(id);
+            await dataRepositorySessionExercise.GetAllByIdAsync(id);
 
             if (session == null)
             {
@@ -67,7 +67,7 @@ namespace Orkaris_Back.Controllers
         }
 
         
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}/{userId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -85,7 +85,7 @@ namespace Orkaris_Back.Controllers
             return NoContent();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}/{userId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

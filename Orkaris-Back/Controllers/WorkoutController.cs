@@ -27,7 +27,7 @@ namespace Orkaris_Back.Controllers
             this.dataRepositorySession = dataRepositorySession;
             _mapper = mapper;
         }
-        [Authorize]
+        //[Authorize]
         [AuthorizeUserMatch]
         [HttpGet("ByUserId/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,7 +38,7 @@ namespace Orkaris_Back.Controllers
             return Ok(_mapper.Map<IEnumerable<WorkoutDTO>>((await dataRepository.GetAllByIdAsync(id)).Value));
         }
 
-        [Authorize]
+        //[Authorize]
         [AuthorizeUserMatch("userId")]
         [HttpGet("ById/{id}/ByUserId/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -57,7 +57,7 @@ namespace Orkaris_Back.Controllers
             return _mapper.Map<WorkoutDTO>(workout.Value);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("{userId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -72,7 +72,7 @@ namespace Orkaris_Back.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}/{userId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -90,7 +90,7 @@ namespace Orkaris_Back.Controllers
             return NoContent();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}/{userId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

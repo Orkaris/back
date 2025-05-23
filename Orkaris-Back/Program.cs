@@ -12,6 +12,16 @@ using Orkaris_Back.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+DotNetEnv.Env.Load();
+builder.Configuration["ConnectionStrings:PostgresConnection"] = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION");
+builder.Configuration["Jwt:Key"] = Environment.GetEnvironmentVariable("JWT_KEY");
+builder.Configuration["Jwt:Issuer"] = Environment.GetEnvironmentVariable("JWT_ISSUER");
+builder.Configuration["Jwt:Audience"] = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+builder.Configuration["SmtpSettings:Server"] = Environment.GetEnvironmentVariable("SMTP_SERVER");
+builder.Configuration["SmtpSettings:Port"] = Environment.GetEnvironmentVariable("SMTP_PORT");
+builder.Configuration["SmtpSettings:User"] = Environment.GetEnvironmentVariable("SMTP_USER");
+builder.Configuration["SmtpSettings:Password"] = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+
 //JWT
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<EmailService>();
@@ -44,13 +54,12 @@ builder.Services.AddScoped<IDataRepository<ExerciseGoal>, ExerciseGoalManager>()
 builder.Services.AddScoped<IDataRepository<ExerciseGoalPerformance>, ExerciseGoalPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Exercise>, ExerciseManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseCategory>, ExerciseCategoryManager>();
-builder.Services.AddScoped<IDataRepository<SessionExercise>, SessionExerciseManager>();
+builder.Services.AddScoped<IDataRepositoryInterTable<SessionExercise>, SessionExerciseManager>();
 builder.Services.AddScoped<IDataRepositoryGetAllById<Session>, SessionManager>();
 builder.Services.AddScoped<IDataRepository<SessionPerformance>, SessionPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Sport>, SportManager>();
 builder.Services.AddScoped<IDataRepositoryGetAllById<Workout>, WorkoutManager>();
 builder.Services.AddScoped<IDataRepositoryString<EmailConfirmationToken>, EmailManager>();
-
 
 
 

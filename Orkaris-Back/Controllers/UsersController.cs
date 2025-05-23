@@ -35,7 +35,7 @@ namespace Orkaris_Back.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         [AuthorizeUserMatch]
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -127,7 +127,7 @@ namespace Orkaris_Back.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<MinimalUserDTO>(user));
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -152,7 +152,7 @@ namespace Orkaris_Back.Controllers
             return NoContent();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
