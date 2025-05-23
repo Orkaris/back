@@ -16,25 +16,29 @@ namespace Orkaris_Back.Controllers
     {
         private readonly IDataRepositoryGetAllById<Session> dataRepository;
         private readonly IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise;
+        private readonly IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal;
+        private readonly IDataRepository<Exercise> dataRepositoryExercise;
         private readonly IMapper _mapper;
 
-        public SessionController(IDataRepositoryGetAllById<Session> dataRepository,IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise, IMapper mapper)
+        public SessionController(IDataRepositoryGetAllById<Session> dataRepository,IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise,IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal,IDataRepository<Exercise> dataRepositoryExercise, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             this.dataRepositorySessionExercise = dataRepositorySessionExercise;
+            this.dataRepositoryExerciseGoal = dataRepositoryExerciseGoal;
+            this.dataRepositoryExercise = dataRepositoryExercise;
             _mapper = mapper;
         }
         //[Authorize]
-        [HttpGet("ByUserId/{id}/ByWorkoutId/{workoutId}")]
+        [HttpGet("ByUserId/{userId}/ByWorkoutId/{workoutId}")]
         [AuthorizeUserMatch]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessions(Guid id, Guid workoutId)
+        public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessions(Guid userId, Guid workoutId)
         {
             return Ok(_mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync(workoutId)).Value));
         }
         //[Authorize]
-        [AuthorizeUserMatch("userId")]
+        // [AuthorizeUserMatch("userId")]
         [HttpGet("ById/{id}/ByUserId/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -42,6 +46,8 @@ namespace Orkaris_Back.Controllers
         {
             var session = await dataRepository.GetByIdAsync(id);
             await dataRepositorySessionExercise.GetAllByIdAsync(id);
+            await dataRepositoryExerciseGoal.GetAllAsync();
+            await dataRepositoryExercise.GetAllAsync();
 
             if (session == null)
             {
@@ -51,7 +57,7 @@ namespace Orkaris_Back.Controllers
             return _mapper.Map<SessionDTO>(session.Value);
         }
 
-        [AllowAnonymous]
+        //[Authorize]
         [HttpPost("{userId}/{workoutId}")]
         [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status201Created)]

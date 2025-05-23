@@ -10,7 +10,7 @@ public class SessionDTO
     public Guid UserId { get; set; }
     public Guid WorkoutId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public ICollection<SessionExercise> SessionExerciseSession { get; set; } = new List<SessionExercise>();
+    public ICollection<SessionExerciseExerciseDTO> SessionExerciseSession { get; set; } = new List<SessionExerciseExerciseDTO>();
 }
 
 public class PostSessionDTO

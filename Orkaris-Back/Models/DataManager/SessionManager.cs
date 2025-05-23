@@ -22,9 +22,9 @@ public class SessionManager : IDataRepositoryGetAllById<Session>
 
     public async Task<ActionResult<Session>> GetByIdAsync(Guid id)
     {
-        var Session = await _context.Sessions.FindAsync(id);
-        if (Session == null) return new NotFoundResult();
-        return new ActionResult<Session>(Session);
+        var session = await _context.Sessions.FindAsync(id);
+        if (session == null) return new NotFoundResult();
+        return new ActionResult<Session>(session);
     }
 
     public async Task AddAsync(Session entity)

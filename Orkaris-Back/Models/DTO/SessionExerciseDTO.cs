@@ -18,3 +18,8 @@ public class PostSessionExerciseDTO
     public Guid ExerciseId { get; set; }
 }
 
+public class SessionExerciseExerciseDTO
+{
+    public ExerciseGoalExerciseDTO? ExerciseGoalSessionExercise { get; set; }
+}
+

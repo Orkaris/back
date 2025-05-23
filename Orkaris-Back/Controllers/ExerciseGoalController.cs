@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Orkaris_Back.Attribute;
 using Orkaris_Back.Models.DTO;
 using Orkaris_Back.Models.EntityFramework;
 using Orkaris_Back.Models.Repository;
@@ -11,12 +10,12 @@ namespace Orkaris_Back.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExerciseController : ControllerBase
+    public class ExerciseGoalController : ControllerBase
     {
-        private readonly IDataRepository<Exercise> dataRepository;
+        private readonly IDataRepository<ExerciseGoal> dataRepository;
         private readonly IMapper _mapper;
 
-        public ExerciseController(IDataRepository<Exercise> dataRepository, IMapper mapper)
+        public ExerciseGoalController(IDataRepository<ExerciseGoal> dataRepository, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
@@ -26,7 +25,7 @@ namespace Orkaris_Back.Controllers
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ExerciseDTO>> GetExerciseById(Guid id)
+        public async Task<ActionResult<ExerciseGoalDTO>> GetExerciseGoalById(Guid id)
         {
             var exercise = await dataRepository.GetByIdAsync(id);
 
@@ -35,19 +34,19 @@ namespace Orkaris_Back.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<ExerciseDTO>(exercise.Value);
+            return _mapper.Map<ExerciseGoalDTO>(exercise.Value);
         }
 
         //[Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ExerciseDTO>> PostExercise(PostExerciseDTO exerciseDTO)
+        public async Task<ActionResult<ExerciseGoalDTO>> PostExerciseGoal(PostExerciseGoalDTO exerciseDTO)
         {
-            var exercise = _mapper.Map<Exercise>(exerciseDTO);
+            var exercise = _mapper.Map<ExerciseGoal>(exerciseDTO);
             await dataRepository.AddAsync(exercise);
 
-            return CreatedAtAction(nameof(GetExerciseById), new { id = exercise.Id}, _mapper.Map<ExerciseDTO>(exercise));
+            return CreatedAtAction(nameof(GetExerciseGoalById), new { id = exercise.Id}, _mapper.Map<ExerciseGoalDTO>(exercise));
         }
 
         
@@ -55,7 +54,7 @@ namespace Orkaris_Back.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteExercise(Guid id)
+        public async Task<IActionResult> DeleteExerciseGoal(Guid id)
         {
             var exercise = await dataRepository.GetByIdAsync(id);
             if (exercise.Value == null)
@@ -73,16 +72,16 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutExercise(Guid id, PostExerciseDTO exerciseDTO)
+        public async Task<IActionResult> PutExerciseGoal(Guid id, PostExerciseGoalDTO exerciseDTO)
         {
-            var existingExercise = await dataRepository.GetByIdAsync(id);
-            if (existingExercise.Value == null)
+            var existingExerciseGoal = await dataRepository.GetByIdAsync(id);
+            if (existingExerciseGoal.Value == null)
             {
                 return NotFound();
             }
 
-            var exercise = _mapper.Map(exerciseDTO, existingExercise.Value);
-            await dataRepository.UpdateAsync(existingExercise.Value, exercise);
+            var exercise = _mapper.Map(exerciseDTO, existingExerciseGoal.Value);
+            await dataRepository.UpdateAsync(existingExerciseGoal.Value, exercise);
 
             return NoContent();
         }
@@ -90,4 +89,5 @@ namespace Orkaris_Back.Controllers
 
         
     }
+    
 }
