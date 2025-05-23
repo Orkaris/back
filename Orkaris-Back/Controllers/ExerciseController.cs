@@ -11,18 +11,18 @@ namespace Orkaris_Back.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExerciceController : ControllerBase
+    public class ExerciseController : ControllerBase
     {
         private readonly IDataRepository<Exercise> dataRepository;
         private readonly IMapper _mapper;
 
-        public ExerciceController(IDataRepository<Exercise> dataRepository, IMapper mapper)
+        public ExerciseController(IDataRepository<Exercise> dataRepository, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -51,7 +51,7 @@ namespace Orkaris_Back.Controllers
         }
 
         
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -68,7 +68,7 @@ namespace Orkaris_Back.Controllers
             return NoContent();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
