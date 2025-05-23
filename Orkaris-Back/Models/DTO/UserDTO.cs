@@ -35,7 +35,7 @@ public class PutUserDTO
     public int Height { get; set; }
 
     public int Weight { get; set; }
-    public DateOnly BirthDate { get; set; }
+    public DateOnly? BirthDate { get; set; } = null;
 
     public int ProfileType { get; set; }
 
