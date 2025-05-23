@@ -165,21 +165,21 @@ namespace Orkaris_Back.Migrations
                 name: "t_j_exercise_category_ext",
                 columns: table => new
                 {
-                    exe_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    exr_id = table.Column<Guid>(type: "uuid", nullable: false),
                     cat_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseCategory", x => new { x.exe_id, x.cat_id });
+                    table.PrimaryKey("PK_ExerciseCategory", x => new { x.exr_id, x.cat_id });
                     table.ForeignKey(
-                        name: "FK_t_j_exercise_category_ext_t_e_Exercise_exr_exe_id",
-                        column: x => x.exe_id,
+                        name: "FK_t_j_exercise_category_ext_t_e_Exercise_exr_exr_id",
+                        column: x => x.exr_id,
                         principalTable: "t_e_Exercise_exr",
                         principalColumn: "exr_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_t_j_exercise_category_ext_t_e_category_cat_exe_id",
-                        column: x => x.exe_id,
+                        name: "FK_t_j_exercise_category_ext_t_e_category_cat_cat_id",
+                        column: x => x.cat_id,
                         principalTable: "t_e_category_cat",
                         principalColumn: "cat_id",
                         onDelete: ReferentialAction.Cascade);
@@ -326,6 +326,11 @@ namespace Orkaris_Back.Migrations
                 name: "IX_t_email_confirmation_tokens_ect_usr_id",
                 table: "t_email_confirmation_tokens_ect",
                 column: "usr_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_j_exercise_category_ext_cat_id",
+                table: "t_j_exercise_category_ext",
+                column: "cat_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_t_j_session_exercise_goal_seg_exg_id",

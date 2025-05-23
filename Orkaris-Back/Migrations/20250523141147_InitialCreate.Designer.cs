@@ -12,7 +12,7 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250523130754_InitialCreate")]
+    [Migration("20250523141147_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -126,7 +126,7 @@ namespace Orkaris_Back.Migrations
                 {
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid")
-                        .HasColumnName("exe_id");
+                        .HasColumnName("exr_id");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid")
@@ -134,6 +134,8 @@ namespace Orkaris_Back.Migrations
 
                     b.HasKey("ExerciseId", "CategoryId")
                         .HasName("PK_ExerciseCategory");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("t_j_exercise_category_ext", (string)null);
                 });
@@ -427,7 +429,7 @@ namespace Orkaris_Back.Migrations
                 {
                     b.HasOne("Orkaris_Back.Models.EntityFramework.Category", "CategoryExerciseCategory")
                         .WithMany("ExerciseCategoryCategory")
-                        .HasForeignKey("ExerciseId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

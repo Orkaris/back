@@ -7,7 +7,7 @@ namespace Orkaris_Back.Models.EntityFramework
     [Table("t_j_exercise_category_exc")]
     public class ExerciseCategory
     {
-        [Required, Column("exe_id")]
+        [Required, Column("exr_id")]
         public Guid ExerciseId { get; set; }
         [Required, Column("cat_id")]
         public Guid CategoryId { get; set; }
