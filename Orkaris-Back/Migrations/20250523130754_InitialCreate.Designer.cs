@@ -12,7 +12,7 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250411121148_InitialCreate")]
+    [Migration("20250523130754_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -211,6 +211,10 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ses_created_at");
 
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("interval")
+                        .HasColumnName("ses_duration");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -309,7 +313,7 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("usr_id");
 
-                    b.Property<DateOnly>("BirthDate")
+                    b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("date")
                         .HasColumnName("usr_birth_date");
 

@@ -310,7 +310,7 @@ namespace Orkaris_Back.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("usr_id");
 
-                    b.Property<DateOnly>("BirthDate")
+                    b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("date")
                         .HasColumnName("usr_birth_date");
 
