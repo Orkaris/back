@@ -16,6 +16,9 @@ public class SessionDTO
 public class PostSessionDTO
 {
     public string Name { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+    public Guid WorkoutId { get; set; }
+
 }
 
 public class SessionWorkoutDTO

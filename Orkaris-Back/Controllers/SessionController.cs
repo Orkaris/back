@@ -29,20 +29,20 @@ namespace Orkaris_Back.Controllers
             _mapper = mapper;
         }
         //[Authorize]
-        [HttpGet("ByUserId/{userId}/ByWorkoutId/{workoutId}")]
-        [AuthorizeUserMatch]
+        [HttpGet("/ByWorkoutId/{workoutId}")]
+        // [AuthorizeUserMatch]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessions(Guid userId, Guid workoutId)
+        public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessions(Guid workoutId)
         {
             return Ok(_mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync(workoutId)).Value));
         }
         //[Authorize]
         // [AuthorizeUserMatch("userId")]
-        [HttpGet("ById/{id}/ByUserId/{userId}")]
+        [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<SessionDTO>> GetSessionById(Guid id, Guid userId)
+        public async Task<ActionResult<SessionDTO>> GetSessionById(Guid id)
         {
             var session = await dataRepository.GetByIdAsync(id);
             await dataRepositorySessionExercise.GetAllByIdAsync(id);
@@ -58,15 +58,13 @@ namespace Orkaris_Back.Controllers
         }
 
         //[Authorize]
-        [HttpPost("{userId}/{workoutId}")]
-        [AuthorizeUserMatch("userId")]
+        [HttpPost]
+        // [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<SessionDTO>> PostSession(PostSessionDTO SessionDTO,Guid userId, Guid workoutId)
+        public async Task<ActionResult<SessionDTO>> PostSession(PostSessionDTO SessionDTO)
         {
             var Session = _mapper.Map<Session>(SessionDTO);
-            Session.UserId = userId;
-            Session.WorkoutId = workoutId;
             await dataRepository.AddAsync(Session);
 
             return CreatedAtAction(nameof(GetSessionById), new { id = Session.Id, userId = Session.UserId }, _mapper.Map<SessionDTO>(Session));
@@ -74,11 +72,11 @@ namespace Orkaris_Back.Controllers
 
         
         //[Authorize]
-        [HttpDelete("{id}/{userId}")]
-        [AuthorizeUserMatch("userId")]
+        [HttpDelete("{id}")]
+        // [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteSession(Guid id, Guid userId)
+        public async Task<IActionResult> DeleteSession(Guid id)
         {
             var session = await dataRepository.GetByIdAsync(id);
             if (session.Value == null)
@@ -93,11 +91,11 @@ namespace Orkaris_Back.Controllers
 
         //[Authorize]
         [HttpPut("{id}/{userId}")]
-        [AuthorizeUserMatch("userId")]
+        // [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutSession(Guid id, PostSessionDTO sessionDTO, Guid userId)
+        public async Task<IActionResult> PutSession(Guid id, PostSessionDTO sessionDTO)
         {
             var existingSession = await dataRepository.GetByIdAsync(id);
             if (existingSession.Value == null)

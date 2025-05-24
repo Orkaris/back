@@ -14,5 +14,6 @@ public class WorkoutDTO
 public class PostWorkoutDTO
 {
     public string Name { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 }
 
