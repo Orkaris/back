@@ -53,7 +53,7 @@ builder.Services.AddScoped<IDataRepository<Category>, CategoryManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseGoal>, ExerciseGoalManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseGoalPerformance>, ExerciseGoalPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Exercise>, ExerciseManager>();
-builder.Services.AddScoped<IDataRepository<ExerciseCategory>, ExerciseCategoryManager>();
+builder.Services.AddScoped<IDataRepositoryInterTable<ExerciseCategory>, ExerciseCategoryManager>();
 builder.Services.AddScoped<IDataRepositoryInterTable<SessionExercise>, SessionExerciseManager>();
 builder.Services.AddScoped<IDataRepositoryGetAllById<Session>, SessionManager>();
 builder.Services.AddScoped<IDataRepository<SessionPerformance>, SessionPerformanceManager>();

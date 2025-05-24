@@ -1,8 +1,5 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Orkaris_Back.Attribute;
 using Orkaris_Back.Models.DTO;
 using Orkaris_Back.Models.EntityFramework;
 using Orkaris_Back.Models.Repository;
@@ -11,59 +8,59 @@ namespace Orkaris_Back.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExerciseController : ControllerBase
+    public class SportController : ControllerBase
     {
-        private readonly IDataRepository<Exercise> dataRepository;
+        private readonly IDataRepository<Sport> dataRepository;
         private readonly IMapper _mapper;
 
-        public ExerciseController(IDataRepository<Exercise> dataRepository, IMapper mapper)
+        public SportController(IDataRepository<Sport> dataRepository, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
         }
-        
+
         //[Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ExerciseDTO>> GetExerciseById(Guid id)
+        public async Task<ActionResult<SportDTO>> GetSportById(Guid id)
         {
-            var exercise = await dataRepository.GetByIdAsync(id);
+            var sport = await dataRepository.GetByIdAsync(id);
 
-            if (exercise == null)
+            if (sport == null)
             {
                 return NotFound();
             }
 
-            return _mapper.Map<ExerciseDTO>(exercise.Value);
+            return _mapper.Map<SportDTO>(sport.Value);
         }
 
         //[Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ExerciseDTO>> PostExercise(PostExerciseDTO exerciseDTO)
+        public async Task<ActionResult<SportDTO>> PostSport(PostSportDTO sportDTO)
         {
-            var exercise = _mapper.Map<Exercise>(exerciseDTO);
-            await dataRepository.AddAsync(exercise);
+            var sport = _mapper.Map<Sport>(sportDTO);
+            await dataRepository.AddAsync(sport);
 
-            return CreatedAtAction(nameof(GetExerciseById), new { id = exercise.Id}, _mapper.Map<ExerciseDTO>(exercise));
+            return CreatedAtAction(nameof(GetSportById), new { id = sport.Id }, _mapper.Map<SportDTO>(sport));
         }
 
-        
+
         //[Authorize]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteExercise(Guid id)
+        public async Task<IActionResult> DeleteSport(Guid id)
         {
-            var exercise = await dataRepository.GetByIdAsync(id);
-            if (exercise.Value == null)
+            var sport = await dataRepository.GetByIdAsync(id);
+            if (sport.Value == null)
             {
                 return NotFound();
             }
 
-            await dataRepository.DeleteAsync(exercise.Value!);
+            await dataRepository.DeleteAsync(sport.Value!);
 
             return NoContent();
         }
@@ -73,21 +70,18 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutExercise(Guid id, PostExerciseDTO exerciseDTO)
+        public async Task<IActionResult> PutSport(Guid id, PostSportDTO sportDTO)
         {
-            var existingExercise = await dataRepository.GetByIdAsync(id);
-            if (existingExercise.Value == null)
+            var existingSport = await dataRepository.GetByIdAsync(id);
+            if (existingSport.Value == null)
             {
                 return NotFound();
             }
 
-            var exercise = _mapper.Map(exerciseDTO, existingExercise.Value);
-            await dataRepository.UpdateAsync(existingExercise.Value, exercise);
+            var sport = _mapper.Map(sportDTO, existingSport.Value);
+            await dataRepository.UpdateAsync(existingSport.Value, sport);
 
             return NoContent();
         }
-
-
-        
     }
 }

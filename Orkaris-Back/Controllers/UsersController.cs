@@ -36,7 +36,7 @@ namespace Orkaris_Back.Controllers
 
 
         //[Authorize]
-        [AuthorizeUserMatch]
+        // [AuthorizeUserMatch]
         [HttpGet("ById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -11,59 +11,59 @@ namespace Orkaris_Back.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExerciseController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly IDataRepository<Exercise> dataRepository;
+        private readonly IDataRepository<Category> dataRepository;
         private readonly IMapper _mapper;
 
-        public ExerciseController(IDataRepository<Exercise> dataRepository, IMapper mapper)
+        public CategoryController(IDataRepository<Category> dataRepository, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
         }
-        
+
         //[Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ExerciseDTO>> GetExerciseById(Guid id)
+        public async Task<ActionResult<CategoryDTO>> GetCategoryById(Guid id)
         {
-            var exercise = await dataRepository.GetByIdAsync(id);
+            var category = await dataRepository.GetByIdAsync(id);
 
-            if (exercise == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return _mapper.Map<ExerciseDTO>(exercise.Value);
+            return _mapper.Map<CategoryDTO>(category.Value);
         }
 
         //[Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ExerciseDTO>> PostExercise(PostExerciseDTO exerciseDTO)
+        public async Task<ActionResult<CategoryDTO>> PostCategory(PostCategoryDTO categoryDTO)
         {
-            var exercise = _mapper.Map<Exercise>(exerciseDTO);
-            await dataRepository.AddAsync(exercise);
+            var category = _mapper.Map<Category>(categoryDTO);
+            await dataRepository.AddAsync(category);
 
-            return CreatedAtAction(nameof(GetExerciseById), new { id = exercise.Id}, _mapper.Map<ExerciseDTO>(exercise));
+            return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, _mapper.Map<CategoryDTO>(category));
         }
 
-        
+
         //[Authorize]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteExercise(Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            var exercise = await dataRepository.GetByIdAsync(id);
-            if (exercise.Value == null)
+            var category = await dataRepository.GetByIdAsync(id);
+            if (category.Value == null)
             {
                 return NotFound();
             }
 
-            await dataRepository.DeleteAsync(exercise.Value!);
+            await dataRepository.DeleteAsync(category.Value!);
 
             return NoContent();
         }
@@ -73,21 +73,18 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutExercise(Guid id, PostExerciseDTO exerciseDTO)
+        public async Task<IActionResult> PutCategory(Guid id, PostCategoryDTO categoryDTO)
         {
-            var existingExercise = await dataRepository.GetByIdAsync(id);
-            if (existingExercise.Value == null)
+            var existingCategory = await dataRepository.GetByIdAsync(id);
+            if (existingCategory.Value == null)
             {
                 return NotFound();
             }
 
-            var exercise = _mapper.Map(exerciseDTO, existingExercise.Value);
-            await dataRepository.UpdateAsync(existingExercise.Value, exercise);
+            var category = _mapper.Map(categoryDTO, existingCategory.Value);
+            await dataRepository.UpdateAsync(existingCategory.Value, category);
 
             return NoContent();
         }
-
-
-        
     }
 }

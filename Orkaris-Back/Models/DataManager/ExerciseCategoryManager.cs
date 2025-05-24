@@ -6,7 +6,7 @@ using Orkaris_Back.Models.Repository;
 
 namespace Orkaris_Back.Models.DataManager;
 
-public class ExerciseCategoryManager : IDataRepository<ExerciseCategory>
+public class ExerciseCategoryManager : IDataRepositoryInterTable<ExerciseCategory>
 {
     private readonly WorkoutDBContext _context;
 
@@ -44,4 +44,18 @@ public class ExerciseCategoryManager : IDataRepository<ExerciseCategory>
         _context.ExerciseCategorys.Remove(entity);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<ActionResult<ExerciseCategory>> GetByIds(Guid exerciseId, Guid categoryId)
+    {
+        var exerciseCategory = await _context.ExerciseCategorys.FirstOrDefaultAsync(w => w.ExerciseId == exerciseId && w.CategoryId == categoryId);
+        if (exerciseCategory == null)
+            return new NotFoundResult();
+        return new ActionResult<ExerciseCategory>(exerciseCategory);
+    }
+
+    public async Task<ActionResult<IEnumerable<ExerciseCategory>>> GetAllByIdAsync(Guid exerciseId)
+    {
+        return new ActionResult<IEnumerable<ExerciseCategory>>(await _context.ExerciseCategorys.Where(w => w.ExerciseId == exerciseId).ToListAsync());
+    }
+
 }

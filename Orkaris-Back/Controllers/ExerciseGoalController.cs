@@ -22,7 +22,7 @@ namespace Orkaris_Back.Controllers
         }
         
         //[Authorize]
-        [HttpGet("ById/{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ExerciseGoalDTO>> GetExerciseGoalById(Guid id)

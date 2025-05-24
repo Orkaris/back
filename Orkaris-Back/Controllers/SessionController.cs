@@ -29,7 +29,7 @@ namespace Orkaris_Back.Controllers
             _mapper = mapper;
         }
         //[Authorize]
-        [HttpGet("/ByWorkoutId/{workoutId}")]
+        [HttpGet("ByWorkoutId/{workoutId}")]
         // [AuthorizeUserMatch]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -39,7 +39,7 @@ namespace Orkaris_Back.Controllers
         }
         //[Authorize]
         // [AuthorizeUserMatch("userId")]
-        [HttpGet("ById/{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<SessionDTO>> GetSessionById(Guid id)
@@ -90,7 +90,7 @@ namespace Orkaris_Back.Controllers
         }
 
         //[Authorize]
-        [HttpPut("{id}/{userId}")]
+        [HttpPut("{id}")]
         // [AuthorizeUserMatch("userId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

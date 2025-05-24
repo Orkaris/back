@@ -28,7 +28,7 @@ namespace Orkaris_Back.Controllers
             _mapper = mapper;
         }
         //[Authorize]
-        [AuthorizeUserMatch]
+        // [AuthorizeUserMatch]
         [HttpGet("ByUserId/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
