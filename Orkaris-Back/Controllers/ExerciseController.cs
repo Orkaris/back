@@ -21,7 +21,19 @@ namespace Orkaris_Back.Controllers
             this.dataRepository = dataRepository;
             _mapper = mapper;
         }
-        
+
+        //[Authorize]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ExerciseDTO>>> GetExercises()
+        {
+
+            return Ok(_mapper.Map<IEnumerable<ExerciseDTO>>((await dataRepository.GetAllAsync()).Value));
+
+        }
+
+
         //[Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
