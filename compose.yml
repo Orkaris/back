@@ -27,8 +27,3 @@ services:
 
 volumes:
   orkaris_data:
-
-networks:
-  default:
-    external: true
-    name: web
