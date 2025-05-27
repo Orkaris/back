@@ -20,7 +20,7 @@ namespace Orkaris_Back.Controllers
         private readonly IDataRepository<Exercise> dataRepositoryExercise;
         private readonly IMapper _mapper;
 
-        public SessionController(IDataRepositoryGetAllById<Session> dataRepository,IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise,IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal,IDataRepository<Exercise> dataRepositoryExercise, IMapper mapper)
+        public SessionController(IDataRepositoryGetAllById<Session> dataRepository, IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise, IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal, IDataRepository<Exercise> dataRepositoryExercise, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             this.dataRepositorySessionExercise = dataRepositorySessionExercise;
@@ -69,8 +69,33 @@ namespace Orkaris_Back.Controllers
 
             return CreatedAtAction(nameof(GetSessionById), new { id = Session.Id, userId = Session.UserId }, _mapper.Map<SessionDTO>(Session));
         }
+        //[Authorize]
+        [HttpPost("PostSession2")]
+        // [AuthorizeUserMatch("userId")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<SessionDTO>> PostSession2(PostSession2DTO sessionDTO)
+        {
+            var sessionToPost = _mapper.Map<PostSessionDTO>(sessionDTO);
 
-        
+            var session = _mapper.Map<Session>(_mapper.Map<PostSessionDTO>(sessionDTO));
+            await dataRepository.AddAsync(session);
+            foreach (var exerciseGoalDTO in sessionDTO.SessionExerciseSession)
+            {
+                var exerciseGoal = _mapper.Map<ExerciseGoal>(exerciseGoalDTO);
+                await dataRepositoryExerciseGoal.AddAsync(exerciseGoal);
+                await dataRepositorySessionExercise.AddAsync(new SessionExercise
+                {
+                    SessionId = session.Id,
+                    ExerciseId = exerciseGoal.Id
+                });
+
+            }
+
+            return CreatedAtAction(nameof(GetSessionById), new { id = session.Id, userId = session.UserId }, _mapper.Map<SessionDTO>(session));
+        }
+
+
         //[Authorize]
         [HttpDelete("{id}")]
         // [AuthorizeUserMatch("userId")]

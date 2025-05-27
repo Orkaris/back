@@ -20,6 +20,13 @@ public class PostSessionDTO
     public Guid WorkoutId { get; set; }
 
 }
+public class PostSession2DTO
+{
+    public string Name { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+    public Guid WorkoutId { get; set; }
+    public ICollection<PostExerciseGoalDTO> SessionExerciseSession { get; set; } = new List<PostExerciseGoalDTO>();
+}
 
 public class SessionWorkoutDTO
 {

@@ -4,7 +4,7 @@ using Orkaris_Back.Models.EntityFramework;
 
 namespace Orkaris_Back.Mapping;
 
-public class MappingProfile: AutoMapper.Profile
+public class MappingProfile : AutoMapper.Profile
 {
     public MappingProfile()
     {
@@ -22,6 +22,8 @@ public class MappingProfile: AutoMapper.Profile
         CreateMap<Session, SessionDTO>();
         CreateMap<Session, PostSessionDTO>();
         CreateMap<PostSessionDTO, Session>();
+        CreateMap<PostSession2DTO, PostSessionDTO>();
+        CreateMap<PostSession2DTO, Session>();
         CreateMap<Session, SessionWorkoutDTO>();
 
         CreateMap<SessionExercise, SessionExerciseDTO>();
@@ -34,6 +36,7 @@ public class MappingProfile: AutoMapper.Profile
         CreateMap<ExerciseGoal, ExerciseGoalDTO>();
         CreateMap<ExerciseGoal, ExerciseGoalExerciseDTO>();
         CreateMap<PostExerciseGoalDTO, ExerciseGoal>();
-            
+        CreateMap<PostExerciseGoalDTO, SessionExercise>();
+
     }
 }
