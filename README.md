@@ -42,6 +42,10 @@ Pour la base
 docker exec -it orkaris-back bash -c 'cd Orkaris-Back && dotnet tool install --global dotnet-ef --version 8.0.0 && export PATH="$PATH:/root/.dotnet/tools" && dotnet ef database update'
 
 ```
+Pour avoir les données
+```
+cat insert.sql | docker exec -i orkaris-db psql -U postgres -d orkaris
+```
 
 
 
