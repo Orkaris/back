@@ -30,7 +30,7 @@ La documentation de l'API est disponible via Swagger. Vous pouvez y accéder en 
 
 [http://localhost:5000/swagger/index.html](http://localhost:5000/swagger/index.html)
 
-Pour tester si l'API marche bien faite : 
+Pour tester si l'API marche bien faite :
 ```bash
 curl -X 'GET' \ 'http://localhost:5000/weatherforecast' \ -H 'accept: application/json'
 ```
@@ -47,5 +47,6 @@ Pour avoir les données
 cat insert.sql | docker exec -i orkaris-db psql -U postgres -d orkaris
 ```
 
+Il faudra aussi ajouter un readMe dans le repertoire Orkaris-back un fichier .env je vous l'envoie sur discord
 
 
