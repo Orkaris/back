@@ -28,6 +28,15 @@ public class PostSession2DTO
     public ICollection<PostExerciseGoalDTO> SessionExerciseSession { get; set; } = new List<PostExerciseGoalDTO>();
 }
 
+public class PutSessionDTO
+{
+    public string Name { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+    public Guid WorkoutId { get; set; }
+    public ICollection<PutExerciseGoalDTO> ExercisesGoal { get; set; } = new List<PutExerciseGoalDTO>();
+}
+
+
 public class SessionWorkoutDTO
 {
     public Guid Id { get; set; }

@@ -18,8 +18,16 @@ public class PostExerciseGoalDTO
     public Guid ExerciseId { get; set; }
 }
 
+public class PutExerciseGoalDTO
+{
+    public Guid Id { get; set; }
+    public int Reps { get; set; }
+    public int Sets { get; set; }
+    public Guid ExerciseId { get; set; }
+}
+
 public class ExerciseGoalExerciseDTO : ExerciseGoalDTO
 {
     public ExerciseDTO? ExerciseExerciseGoal { get; set; }
-    
+
 }

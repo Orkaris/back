@@ -40,16 +40,16 @@ namespace Orkaris_Back.Controllers
         [HttpGet("BySessionId/{sessionId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<SessionExerciseDTO>> GetSessionExercisesBySessionId(Guid sessionId, Guid exerciseId)
+        public async Task<ActionResult<IEnumerable<SessionExerciseDTO>>> GetSessionExercisesBySessionId(Guid sessionId)
         {
-            var sessionExercise = await dataRepository.GetByIds(sessionId, exerciseId);
+            var sessionExercise = await dataRepository.GetAllByIdAsync(sessionId);
 
             if (sessionExercise == null)
             {
                 return NotFound();
             }
 
-            return _mapper.Map<SessionExerciseDTO>(sessionExercise.Value);
+            return Ok(_mapper.Map<IEnumerable<SessionExerciseDTO>>((await dataRepository.GetAllByIdAsync(sessionId)).Value));
         }
 
 

@@ -22,4 +22,3 @@ public class SessionExerciseExerciseDTO
 {
     public ExerciseGoalExerciseDTO? ExerciseGoalSessionExercise { get; set; }
 }
-

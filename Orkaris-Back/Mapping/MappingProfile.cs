@@ -25,6 +25,11 @@ public class MappingProfile : AutoMapper.Profile
         CreateMap<PostSession2DTO, PostSessionDTO>();
         CreateMap<PostSession2DTO, Session>();
         CreateMap<Session, SessionWorkoutDTO>();
+        CreateMap<PutSessionDTO, Session>();
+        CreateMap<PutSessionDTO, PostSessionDTO>();
+        CreateMap<PutExerciseGoalDTO, ExerciseGoalDTO>();
+        CreateMap<PutExerciseGoalDTO, SessionExercise>();
+        CreateMap<SessionExerciseDTO, SessionExercise>();
 
         CreateMap<SessionExercise, SessionExerciseDTO>();
         CreateMap<SessionExercise, SessionExerciseExerciseDTO>();
@@ -35,6 +40,7 @@ public class MappingProfile : AutoMapper.Profile
 
         CreateMap<ExerciseGoal, ExerciseGoalDTO>();
         CreateMap<ExerciseGoal, ExerciseGoalExerciseDTO>();
+        CreateMap<ExerciseGoalDTO, ExerciseGoal>();
         CreateMap<PostExerciseGoalDTO, ExerciseGoal>();
         CreateMap<PostExerciseGoalDTO, SessionExercise>();
 

@@ -120,12 +120,48 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutSession(Guid id, PostSessionDTO sessionDTO)
+        public async Task<IActionResult> PutSession(Guid id, PutSessionDTO sessionDTO)
         {
+            var sessionToPost = _mapper.Map<PostSessionDTO>(sessionDTO);
             var existingSession = await dataRepository.GetByIdAsync(id);
             if (existingSession.Value == null)
             {
                 return NotFound();
+            }
+            IEnumerable<SessionExerciseDTO> existingSessionExercise = _mapper.Map<IEnumerable<SessionExerciseDTO>>((await dataRepositorySessionExercise.GetAllByIdAsync(id)).Value);
+            var exerciseGoalIdsToKeep = sessionDTO.ExercisesGoal.Select(eg => eg.Id).ToHashSet();
+            var exerciseGoalsToDelete = new List<ExerciseGoal>();
+            foreach (var sessionExercice in existingSessionExercise)
+            {
+                if (sessionExercice != null && !exerciseGoalIdsToKeep.Contains(sessionExercice.ExerciseId))
+                {
+                    var sessionExerciseEntity = (await dataRepositorySessionExercise.GetByIds(id, sessionExercice.ExerciseId)).Value;
+                    if (sessionExerciseEntity != null)
+                    {
+                        await dataRepositorySessionExercise.DeleteAsync(sessionExerciseEntity);
+                    }
+                    exerciseGoalsToDelete.Add(_mapper.Map<ExerciseGoal>(sessionExercice.ExerciseGoalSessionExercise));
+                }
+            }
+            foreach (var exerciseGoal in exerciseGoalsToDelete)
+            {
+                var sessionExerciseEntity = (await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoal.Id)).Value;
+                if (sessionExerciseEntity != null)
+                {
+                    await dataRepositoryExerciseGoal.DeleteAsync(sessionExerciseEntity);
+                }
+            }
+            foreach (var exerciseGoalDTO in sessionDTO.ExercisesGoal)
+            {
+                var exerciseGoal = _mapper.Map<ExerciseGoalDTO>(exerciseGoalDTO);
+                var existingExerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoal.Id);
+                if (existingExerciseGoal.Value == null)
+                {
+                    return NotFound("Exercise goal not found: " + exerciseGoalDTO.Reps);
+                }
+
+                var exercise = _mapper.Map(exerciseGoal, existingExerciseGoal.Value);
+                await dataRepositoryExerciseGoal.UpdateAsync(existingExerciseGoal.Value, exercise);
             }
 
             var session = _mapper.Map(sessionDTO, existingSession.Value);
