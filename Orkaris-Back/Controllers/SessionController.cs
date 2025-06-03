@@ -120,52 +120,50 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutSession(Guid id, PutSessionDTO sessionDTO)
+        public async Task<IActionResult> PutSession(Guid id, PostSession2DTO sessionDTO)
         {
-            var sessionToPost = _mapper.Map<PostSessionDTO>(sessionDTO);
             var existingSession = await dataRepository.GetByIdAsync(id);
             if (existingSession.Value == null)
             {
                 return NotFound();
             }
-            IEnumerable<SessionExerciseDTO> existingSessionExercise = _mapper.Map<IEnumerable<SessionExerciseDTO>>((await dataRepositorySessionExercise.GetAllByIdAsync(id)).Value);
-            var exerciseGoalIdsToKeep = sessionDTO.ExercisesGoal.Select(eg => eg.Id).ToHashSet();
-            var exerciseGoalsToDelete = new List<ExerciseGoal>();
-            foreach (var sessionExercice in existingSessionExercise)
+
+            // Supprimer les anciens exercise goals et leurs relations
+            var existingSessionExercises = await dataRepositorySessionExercise.GetAllByIdAsync(id);
+            if (existingSessionExercises.Value != null)
             {
-                if (sessionExercice != null && !exerciseGoalIdsToKeep.Contains(sessionExercice.ExerciseId))
+                foreach (var sessionExercise in existingSessionExercises.Value)
                 {
-                    var sessionExerciseEntity = (await dataRepositorySessionExercise.GetByIds(id, sessionExercice.ExerciseId)).Value;
-                    if (sessionExerciseEntity != null)
+                    // D'abord supprimer la relation
+                    await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
+                    
+                    // Ensuite supprimer l'exercise goal
+                    var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(sessionExercise.ExerciseId);
+                    if (exerciseGoal.Value != null)
                     {
-                        await dataRepositorySessionExercise.DeleteAsync(sessionExerciseEntity);
+                        await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal.Value);
                     }
-                    exerciseGoalsToDelete.Add(_mapper.Map<ExerciseGoal>(sessionExercice.ExerciseGoalSessionExercise));
                 }
-            }
-            foreach (var exerciseGoal in exerciseGoalsToDelete)
-            {
-                var sessionExerciseEntity = (await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoal.Id)).Value;
-                if (sessionExerciseEntity != null)
-                {
-                    await dataRepositoryExerciseGoal.DeleteAsync(sessionExerciseEntity);
-                }
-            }
-            foreach (var exerciseGoalDTO in sessionDTO.ExercisesGoal)
-            {
-                var exerciseGoal = _mapper.Map<ExerciseGoalDTO>(exerciseGoalDTO);
-                var existingExerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoal.Id);
-                if (existingExerciseGoal.Value == null)
-                {
-                    return NotFound("Exercise goal not found: " + exerciseGoalDTO.Reps);
-                }
-
-                var exercise = _mapper.Map(exerciseGoal, existingExerciseGoal.Value);
-                await dataRepositoryExerciseGoal.UpdateAsync(existingExerciseGoal.Value, exercise);
             }
 
+            // Mettre à jour les informations de base de la session
             var session = _mapper.Map(sessionDTO, existingSession.Value);
             await dataRepository.UpdateAsync(existingSession.Value, session);
+
+            // Créer les nouveaux exercise goals et leurs relations
+            foreach (var exerciseGoalDTO in sessionDTO.SessionExerciseSession)
+            {
+                // D'abord créer l'exercise goal
+                var exerciseGoal = _mapper.Map<ExerciseGoal>(exerciseGoalDTO);
+                await dataRepositoryExerciseGoal.AddAsync(exerciseGoal);
+
+                // Créer la relation avec l'ID de l'exercise goal créé
+                await dataRepositorySessionExercise.AddAsync(new SessionExercise
+                {
+                    SessionId = session.Id,
+                    ExerciseId = exerciseGoal.Id
+                });
+            }
 
             return NoContent();
         }
@@ -226,6 +224,40 @@ namespace Orkaris_Back.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("{sessionId}/exercise-goal/{exerciseGoalId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteExerciseGoalFromSession(Guid sessionId, Guid exerciseGoalId)
+        {
+            // Vérifier si la session existe
+            var session = await dataRepository.GetByIdAsync(sessionId);
+            if (session.Value == null)
+            {
+                return NotFound("Session not found");
+            }
+
+            // Vérifier si l'exercise goal existe
+            var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoalId);
+            if (exerciseGoal.Value == null)
+            {
+                return NotFound("Exercise goal not found");
+            }
+
+            // Récupérer la relation session-exercise goal
+            var sessionExercise = await dataRepositorySessionExercise.GetByIds(sessionId, exerciseGoalId);
+            if (sessionExercise.Value == null)
+            {
+                return NotFound("Exercise goal is not associated with this session");
+            }
+
+            // Supprimer la relation
+            await dataRepositorySessionExercise.DeleteAsync(sessionExercise.Value);
+
+            // Supprimer l'exercise goal
+            await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal.Value);
+
+            return NoContent();
+        }
 
     }
 }

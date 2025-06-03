@@ -115,13 +115,13 @@ INSERT INTO "t_e_Exercise_exr" (exr_id, exr_name, exr_description, exr_created_a
 ('5562ae88-9eaa-bbcc-ddee-ff0011223344', 'Mountain Climber', 'Dynamic core and cardio movement.', '2024-03-03T16:20:00'),
 ('a556677e-8899-aabb-ccdd-eeea0a112233', 'Cable Woodchopper', 'Rotational core exercise hitting the obliques.', '2024-04-29T16:38:20');
 
-INSERT INTO t_e_exercise_goal_exg (exg_id, exg_reps, exg_sets, exr_created_at, exr_id) VALUES
-('a1c2345d-6789-4bcd-a123-567890abcdef', 10, 4, '2024-05-01T08:00:00Z', '9e3a1a58-fb71-4d6e-a3b1-68d1aefc7e01'), -- Bench Press
-('b2d3456e-7890-5cde-b234-678901bcdef0', 12, 3, '2024-05-01T08:05:00Z', '778899aa-bbcc-ddee-ff00-112233445566'), -- Triceps Kickback
-('c3e4567f-8901-6def-c345-789012cdef01', 5, 5, '2024-05-01T08:10:00Z', '6a345e31-2ba9-41ef-a23e-15cd9819fa89'), -- Deadlift
-('d4f56780-9012-7ef0-d456-890123def012', 8, 4, '2024-05-01T08:15:00Z', 'f89ea42b-56d2-4c36-8f4e-f76f8498f9df'), -- Squat
-('e5a67891-0123-8f01-e567-901234ef0123', 10, 4, '2024-05-01T08:20:00Z', '55667788-99aa-bbcc-ddee-ff0011223344'), -- Military Press
-('f6b78902-1234-9f12-f678-012345f01234', 15, 3, '2024-05-01T08:25:00Z', 'eeff0011-2233-4455-6677-8899aabbccdd'); -- Leg Raise
+INSERT INTO t_e_exercise_goal_exg (exg_id, exg_reps, exg_sets, exr_created_at, exr_id, exg_weight) VALUES
+('a1c2345d-6789-4bcd-a123-567890abcdef', 10, 4, '2024-05-01T08:00:00Z', '9e3a1a58-fb71-4d6e-a3b1-68d1aefc7e01', 60.0), -- Bench Press
+('b2d3456e-7890-5cde-b234-678901bcdef0', 12, 3, '2024-05-01T08:05:00Z', '778899aa-bbcc-ddee-ff00-112233445566', 10.0), -- Triceps Kickback
+('c3e4567f-8901-6def-c345-789012cdef01', 5, 5, '2024-05-01T08:10:00Z', '6a345e31-2ba9-41ef-a23e-15cd9819fa89', 120.0), -- Deadlift
+('d4f56780-9012-7ef0-d456-890123def012', 8, 4, '2024-05-01T08:15:00Z', 'f89ea42b-56d2-4c36-8f4e-f76f8498f9df', 100.0), -- Squat
+('e5a67891-0123-8f01-e567-901234ef0123', 10, 4, '2024-05-01T08:20:00Z', '55667788-99aa-bbcc-ddee-ff0011223344', 40.0), -- Military Press
+('f6b78902-1234-9f12-f678-012345f01234', 15, 3, '2024-05-01T08:25:00Z', 'eeff0011-2233-4455-6677-8899aabbccdd', 0.0); -- Leg Raise
 
 INSERT INTO t_e_category_cat (cat_id, cat_name, spo_id, cat_created_at) VALUES
 ('c7901cf3-d07a-4a3d-94a7-fd38c5722c91', 'Chest', 'c4e4e694-5b9f-40d3-87ac-75116d428a1f', '2024-05-01T09:00:00Z'),
@@ -181,8 +181,8 @@ INSERT INTO t_j_exercise_category_ext (exr_id, cat_id) VALUES
 ('55667788-99aa-bbcc-ddee-ff0011223344', 'c7901cf3-d07a-4a3d-94a7-fd38c5722c91'),
 ('55667788-99aa-bbcc-ddee-ff0011223344', '6d4f9e70-87df-46a6-83ef-5a0df8c84226'),
 
--- Leg Raise: Quadriceps
-('eeff0011-2233-4455-6677-8899aabbccdd', '4ff2e206-e6cf-442f-8a56-dad168d14e62');
+-- Leg Raise: Abdominals
+('eeff0011-2233-4455-6677-8899aabbccdd', '879f0e2c-bf20-4c91-90ee-f58b730fd218');
 
 
 INSERT INTO t_e_session_ses (ses_id, ses_name, usr_id, wrk_id, ses_created_at, ses_duration) VALUES
@@ -300,5 +300,5 @@ INSERT INTO t_e_exercise_muscle_link (exr_id, mus_id) VALUES
 ('55667788-99aa-bbcc-ddee-ff0011223344', 'b3a3c3d3-e3f3-43a3-93a3-33a3b3c3d3e3'),
 ('55667788-99aa-bbcc-ddee-ff0011223344', 'b2a2c2d2-e2f2-42a2-92a2-22a2b2c2d2e2'),
 
--- Leg Raise: Rectus Abdominis
+-- Leg Raise: Abdominals
 ('eeff0011-2233-4455-6677-8899aabbccdd', 'c0a0c0d0-f0f0-40a0-90a0-00a0b0c0d0e0');
