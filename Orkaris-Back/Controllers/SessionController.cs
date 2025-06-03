@@ -170,6 +170,62 @@ namespace Orkaris_Back.Controllers
             return NoContent();
         }
 
+        [HttpGet("{sessionId}/muscles")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<object>>> GetMusclesBySession(Guid sessionId)
+        {
+            // 1. Récupère tous les SessionExercise pour la session (table de jointure : t_j_session_exercise_goal_seg)
+            var sessionExercisesResult = await dataRepositorySessionExercise.GetAllByIdAsync(sessionId);
+            var sessionExercises = sessionExercisesResult.Value?.ToList();
+            if (sessionExercises == null || !sessionExercises.Any())
+                return NotFound("Aucun exercice trouvé pour cette session.");
+
+            // 2. Pour chaque SessionExercise, récupérer l'ExerciseGoal (exg_id)
+            var exerciseGoalIds = sessionExercises.Select(se => se.ExerciseId).ToList();
+
+            // 3. Pour chaque ExerciseGoal, récupérer l'ExerciseId (exr_id), Sets et Reps
+            var allExerciseGoalsResult = await dataRepositoryExerciseGoal.GetAllAsync();
+            var allExerciseGoals = allExerciseGoalsResult.Value?.ToList() ?? new List<ExerciseGoal>();
+            var relevantGoals = allExerciseGoals.Where(eg => exerciseGoalIds.Contains(eg.Id)).ToList();
+
+            // 4. Pour chaque Exercise, récupérer les muscles associés
+            var exerciseIds = relevantGoals.Select(eg => eg.ExerciseId).Distinct().ToList();
+            var allExercisesResult = await dataRepositoryExercise.GetAllAsync();
+            var allExercises = allExercisesResult.Value?.ToList() ?? new List<Exercise>();
+            var exerciseDict = allExercises.Where(e => exerciseIds.Contains(e.Id)).ToDictionary(e => e.Id, e => e);
+
+            // 5. Pour chaque muscle, additionner les reps/sets de tous les ExerciseGoal de la session
+            var muscleStats = new Dictionary<string, (int nbRep, int nbSet)>();
+
+            foreach (var goal in relevantGoals)
+            {
+                if (!exerciseDict.TryGetValue(goal.ExerciseId, out var exercise))
+                    continue;
+
+                foreach (var muscle in exercise.Muscles)
+                {
+                    if (muscleStats.ContainsKey(muscle.Name))
+                    {
+                        var prev = muscleStats[muscle.Name];
+                        muscleStats[muscle.Name] = (prev.nbRep + goal.Reps, prev.nbSet + goal.Sets);
+                    }
+                    else
+                    {
+                        muscleStats[muscle.Name] = (goal.Reps, goal.Sets);
+                    }
+                }
+            }
+
+            var result = muscleStats.Select(ms => new {
+                nomMuscle = ms.Key,
+                nbRep = ms.Value.nbRep,
+                nbSet = ms.Value.nbSet
+            }).ToList();
+
+            return Ok(result);
+        }
+
 
     }
 }

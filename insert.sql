@@ -10,6 +10,8 @@ DELETE FROM t_e_session_ses;
 DELETE FROM t_e_exercise_goal_performance_egp;
 DELETE FROM t_e_session_performance_spe;
 DELETE FROM t_j_session_exercise_goal_seg;
+DELETE FROM t_e_exercise_muscle_link;
+DELETE FROM t_e_muscle_mus;
 
 INSERT INTO t_e_sport_spo (spo_id, spo_name) VALUES
 ('45efb5a5-8d94-49de-bb47-fa31bf246fb2', 'Fitness'),
@@ -262,3 +264,41 @@ INSERT INTO t_j_session_exercise_goal_seg (ses_id, exg_id) VALUES
 ('ae5cb69b-2789-4c94-8ef8-9267ef034268', 'f6b78902-1234-9f12-f678-012345f01234'), -- Leg Raise
 ('ae5cb69b-2789-4c94-8ef8-9267ef034268', 'c3e4567f-8901-6def-c345-789012cdef01'), -- Deadlift
 ('ae5cb69b-2789-4c94-8ef8-9267ef034268', 'b2d3456e-7890-5cde-b234-678901bcdef0'); -- Triceps Kickback (as accessory work)
+
+INSERT INTO t_e_muscle_mus (mus_id, mus_name) VALUES
+('b1a1c1d1-e1f1-41a1-91a1-11a1b1c1d1e1', 'Pectoralis Major'),
+('b2a2c2d2-e2f2-42a2-92a2-22a2b2c2d2e2', 'Triceps Brachii'),
+('b3a3c3d3-e3f3-43a3-93a3-33a3b3c3d3e3', 'Deltoid'),
+('b4a4c4d4-e4f4-44a4-94a4-44a4b4c4d4e4', 'Latissimus Dorsi'),
+('b5a5c5d5-e5f5-45a5-95a5-55a5b5c5d5e5', 'Biceps Brachii'),
+('b6a6c6d6-e6f6-46a6-96a6-66a6b6c6d6e6', 'Quadriceps'),
+('b7a7c7d7-e7f7-47a7-97a7-77a7b7c7d7e7', 'Hamstrings'),
+('b8a8c8d8-e8f8-48a8-98a8-88a8b8c8d8e8', 'Gluteus Maximus'),
+('b9a9c9d9-e9f9-49a9-99a9-99a9b9c9d9e9', 'Gastrocnemius'),
+('c0a0c0d0-f0f0-40a0-90a0-00a0b0c0d0e0', 'Rectus Abdominis');
+
+-- Bench Press: Pectoralis Major, Triceps Brachii, Deltoid
+INSERT INTO t_e_exercise_muscle_link (exr_id, mus_id) VALUES
+('9e3a1a58-fb71-4d6e-a3b1-68d1aefc7e01', 'b1a1c1d1-e1f1-41a1-91a1-11a1b1c1d1e1'), -- Pectoralis Major
+('9e3a1a58-fb71-4d6e-a3b1-68d1aefc7e01', 'b2a2c2d2-e2f2-42a2-92a2-22a2b2c2d2e2'), -- Triceps Brachii
+('9e3a1a58-fb71-4d6e-a3b1-68d1aefc7e01', 'b3a3c3d3-e3f3-43a3-93a3-33a3b3c3d3e3'), -- Deltoid
+
+-- Deadlift: Hamstrings, Gluteus Maximus, Latissimus Dorsi
+('6a345e31-2ba9-41ef-a23e-15cd9819fa89', 'b7a7c7d7-e7f7-47a7-97a7-77a7b7c7d7e7'),
+('6a345e31-2ba9-41ef-a23e-15cd9819fa89', 'b8a8c8d8-e8f8-48a8-98a8-88a8b8c8d8e8'),
+('6a345e31-2ba9-41ef-a23e-15cd9819fa89', 'b4a4c4d4-e4f4-44a4-94a4-44a4b4c4d4e4'),
+
+-- Squat: Quadriceps, Gluteus Maximus, Hamstrings
+('f89ea42b-56d2-4c36-8f4e-f76f8498f9df', 'b6a6c6d6-e6f6-46a6-96a6-66a6b6c6d6e6'),
+('f89ea42b-56d2-4c36-8f4e-f76f8498f9df', 'b8a8c8d8-e8f8-48a8-98a8-88a8b8c8d8e8'),
+('f89ea42b-56d2-4c36-8f4e-f76f8498f9df', 'b7a7c7d7-e7f7-47a7-97a7-77a7b7c7d7e7'),
+
+-- Triceps Kickback: Triceps Brachii
+('778899aa-bbcc-ddee-ff00-112233445566', 'b2a2c2d2-e2f2-42a2-92a2-22a2b2c2d2e2'),
+
+-- Military Press: Deltoid, Triceps Brachii
+('55667788-99aa-bbcc-ddee-ff0011223344', 'b3a3c3d3-e3f3-43a3-93a3-33a3b3c3d3e3'),
+('55667788-99aa-bbcc-ddee-ff0011223344', 'b2a2c2d2-e2f2-42a2-92a2-22a2b2c2d2e2'),
+
+-- Leg Raise: Rectus Abdominis
+('eeff0011-2233-4455-6677-8899aabbccdd', 'c0a0c0d0-f0f0-40a0-90a0-00a0b0c0d0e0');

@@ -18,8 +18,10 @@ namespace Orkaris_Back.Models.EntityFramework
         // Navigation property
         [InverseProperty(nameof(ExerciseGoal.ExerciseExerciseGoal))]
         public virtual ICollection<ExerciseGoal> ExerciseGoalExercice { get; set; } = new List<ExerciseGoal>();
-        
+
         [InverseProperty(nameof(ExerciseCategory.ExerciseExerciseCategory))]
         public virtual ICollection<ExerciseCategory> ExerciseCategoryExercise { get; set; } = new List<ExerciseCategory>();
+
+        public ICollection<Muscle> Muscles { get; set; } = new List<Muscle>();
     }
 }

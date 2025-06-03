@@ -17,36 +17,33 @@ namespace Orkaris_Back.Controllers
             _context = context;
         }
 
-        // [Authorize]
-        // [HttpGet("weekly-volume")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // public async Task<IActionResult> GetWeeklyVolume()
-        // {
-        //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //     if (userId == null)
-        //         return Unauthorized();
+        [Authorize]
+        [HttpGet("weekly-volume/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetWeeklyVolume(Guid userId)
+        {
+            var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1); // Lundi
+            var endOfWeek = startOfWeek.AddDays(7);
 
-        //     var parsedUserId = Guid.Parse(userId);
-        //     var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1);
+            // Récupère les sessions de l'utilisateur pour la semaine
+            var sessionIds = await _context.Sessions
+                .Where(s => s.UserId == userId && s.CreatedAt >= startOfWeek && s.CreatedAt < endOfWeek)
+                .Select(s => s.Id)
+                .ToListAsync();
 
-        //     // On récupère les sessions de l'utilisateur depuis le début de la semaine
-        //     var sessionIds = await _context.Sessions
-        //         .Where(s => s.UserId == parsedUserId && s.CreatedAt >= startOfWeek)
-        //         .Select(s => s.Id)
-        //         .ToListAsync();
+            // Calcule le volume total (sets * reps * weight) pour ces sessions
+            var totalVolume = await _context.ExerciseGoalPerformances
+                .Where(egp => sessionIds.Contains(
+                    _context.SessionExercises
+                        .Where(se => se.ExerciseId == egp.ExerciseGoalId)
+                        .Select(se => se.SessionId)
+                        .FirstOrDefault()))
+                .SumAsync(egp => egp.Sets * egp.Reps * egp.Weight);
 
-        //     // On calcule le volume total à partir des performances liées à ces sessions
-        //     var totalVolume = await _context.ExerciseGoalPerformances
-        //         .Where(egp => sessionIds.Contains(
-        //             _context.SessionExercises
-        //                 .Where(se => se.ExerciseId == egp.ExerciseGoalId)
-        //                 .Select(se => se.SessionId)
-        //                 .FirstOrDefault()))
-        //         .SumAsync(egp => egp.Sets * egp.Reps * egp.Weight);
+            return Ok(totalVolume);
+        }
 
-        //     return Ok(new { volumeKg = totalVolume });
-        // }
         [Authorize]
         [HttpGet("monthly-sessions/{userId}")]
         public async Task<IActionResult> GetSessionsCountThisMonth(Guid userId)

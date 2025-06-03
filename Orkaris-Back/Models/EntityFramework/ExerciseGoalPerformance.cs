@@ -15,6 +15,8 @@ namespace Orkaris_Back.Models.EntityFramework
         public int Sets { get; set; }
         [Column("egp_created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Column("egp_weight")]
+        public float Weight { get; set; }
         [ForeignKey("ExerciseGoal"), Required, Column("exg_id")]
         public Guid ExerciseGoalId { get; set; }
 
