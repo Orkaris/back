@@ -211,7 +211,24 @@ namespace Orkaris_Back.Models.EntityFramework
                 // Navigation properties
                 entity.HasOne(e => e.UserEmail).WithMany(u => u.EmailUser).HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<ExerciseMuscleLink>().HasKey(x => new { x.ExerciseId, x.MuscleId });
+            modelBuilder.Entity<ExerciseMuscleLink>(entity =>
+            {
+                entity.ToTable("t_e_exercise_muscle_link");
+                entity.HasKey(e => new { e.ExerciseId, e.MuscleId });
+                entity.Property(e => e.ExerciseId).IsRequired().HasColumnName("exr_id");
+                entity.Property(e => e.MuscleId).IsRequired().HasColumnName("mus_id");
+
+                // Navigation properties
+                entity.HasOne(e => e.ExerciseExerciseMuscle)
+                    .WithMany(e => e.ExerciseMuscleExercise)
+                    .HasForeignKey(e => e.ExerciseId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.MuscleExerciseMuscle)
+                    .WithMany(m => m.ExerciseMuscleMuscle)
+                    .HasForeignKey(e => e.MuscleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

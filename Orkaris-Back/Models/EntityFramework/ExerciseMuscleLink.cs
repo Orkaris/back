@@ -11,5 +11,11 @@ namespace Orkaris_Back.Models.EntityFramework
 
         [Column("mus_id")]
         public Guid MuscleId { get; set; }
+
+        // Navigation properties
+        [ForeignKey("ExerciseId"), InverseProperty(nameof(Exercise.ExerciseMuscleExercise))]
+        public virtual Exercise? ExerciseExerciseMuscle{ get; set; }
+        [ForeignKey("MuscleId"), InverseProperty(nameof(Muscle.ExerciseMuscleMuscle))]
+        public virtual Muscle? MuscleExerciseMuscle { get; set; }
     }
 }
