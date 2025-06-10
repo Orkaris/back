@@ -49,4 +49,10 @@ public class SessionManager : IDataRepositoryGetAllById<Session>
     {
         return new ActionResult<IEnumerable<Session>>(await _context.Sessions.Where(w => w.WorkoutId == id).ToListAsync());       
     }
+
+    public async Task<ActionResult<IEnumerable<Session>>> GetAllByIdAsync2(Guid id)
+    {
+        List<Workout> workouts = await _context.Workouts.Where(w => w.UserId == id).ToListAsync();
+        return new ActionResult<IEnumerable<Session>>(await _context.Sessions.Where(w => workouts.Select(wo => wo.Id).Contains(w.WorkoutId)).ToListAsync());
+    }
 }

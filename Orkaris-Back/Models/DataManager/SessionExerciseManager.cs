@@ -57,4 +57,9 @@ public class SessionExerciseManager : IDataRepositoryInterTable<SessionExercise>
     {
         return new ActionResult<IEnumerable<SessionExercise>>(await _context.SessionExercises.Where(w => w.SessionId == sessionId).ToListAsync());
     }
+
+    public Task<ActionResult<IEnumerable<SessionExercise>>> GetAllByIdAsync2(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

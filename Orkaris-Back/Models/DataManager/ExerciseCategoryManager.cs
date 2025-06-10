@@ -58,4 +58,8 @@ public class ExerciseCategoryManager : IDataRepositoryInterTable<ExerciseCategor
         return new ActionResult<IEnumerable<ExerciseCategory>>(await _context.ExerciseCategorys.Where(w => w.ExerciseId == exerciseId).ToListAsync());
     }
 
+    public Task<ActionResult<IEnumerable<ExerciseCategory>>> GetAllByIdAsync2(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

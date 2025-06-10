@@ -50,4 +50,8 @@ public class WorkoutManager : IDataRepositoryGetAllById<Workout>
         return new ActionResult<IEnumerable<Workout>>(await _context.Workouts.Where(w => w.UserId == id).ToListAsync());
     }
 
+    public Task<ActionResult<IEnumerable<Workout>>> GetAllByIdAsync2(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

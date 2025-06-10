@@ -37,6 +37,14 @@ namespace Orkaris_Back.Controllers
         {
             return Ok(_mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync(workoutId)).Value));
         }
+        [HttpGet("ByUserId/{userId}")]
+        // [AuthorizeUserMatch]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessionsByUserId(Guid userId)
+        {
+            return Ok(_mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync2(userId)).Value));
+        }
         //[Authorize]
         // [AuthorizeUserMatch("userId")]
         [HttpGet("{id}")]
