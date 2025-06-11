@@ -60,7 +60,8 @@ builder.Services.AddScoped<IDataRepository<SessionPerformance>, SessionPerforman
 builder.Services.AddScoped<IDataRepository<Sport>, SportManager>();
 builder.Services.AddScoped<IDataRepositoryGetAllById<Workout>, WorkoutManager>();
 builder.Services.AddScoped<IDataRepositoryString<EmailConfirmationToken>, EmailManager>();
-
+builder.Services.AddScoped<IDataRepository<ExerciseMuscleLink>, ExerciseMuscleLinkManager>();
+builder.Services.AddScoped<IDataRepository<Muscle>, MuscleManager>();
 
 
 builder.Services.AddControllers().AddJsonOptions(options =>

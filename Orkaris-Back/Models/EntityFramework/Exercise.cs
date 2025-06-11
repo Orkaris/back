@@ -22,6 +22,9 @@ namespace Orkaris_Back.Models.EntityFramework
         [InverseProperty(nameof(ExerciseCategory.ExerciseExerciseCategory))]
         public virtual ICollection<ExerciseCategory> ExerciseCategoryExercise { get; set; } = new List<ExerciseCategory>();
 
-        public ICollection<Muscle> Muscles { get; set; } = new List<Muscle>();
+        [InverseProperty(nameof(ExerciseMuscleLink.ExerciseExerciseMuscle))]
+        public virtual ICollection<ExerciseMuscleLink> ExerciseMuscleExercise { get; set; } = new List<ExerciseMuscleLink>();
+
+        // public ICollection<Muscle> Muscles { get; set; } = new List<Muscle>();
     }
 }

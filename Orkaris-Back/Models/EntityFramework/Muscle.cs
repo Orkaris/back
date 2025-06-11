@@ -13,6 +13,9 @@ namespace Orkaris_Back.Models.EntityFramework
         [Required, Column("mus_name"), MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
-        public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
+        // public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
+
+        [InverseProperty(nameof(ExerciseMuscleLink.MuscleExerciseMuscle))]
+        public virtual ICollection<ExerciseMuscleLink> ExerciseMuscleMuscle { get; set; } = new List<ExerciseMuscleLink>();
     }
 }

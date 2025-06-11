@@ -19,14 +19,26 @@ namespace Orkaris_Back.Controllers
         private readonly IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal;
         private readonly IDataRepository<Exercise> dataRepositoryExercise;
         private readonly IMapper _mapper;
+        private readonly IDataRepository<ExerciseMuscleLink> dataRepositoryExerciseMuscleLink;
+        private readonly IDataRepository<Muscle> dataRepositoryMuscle;
 
-        public SessionController(IDataRepositoryGetAllById<Session> dataRepository, IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise, IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal, IDataRepository<Exercise> dataRepositoryExercise, IMapper mapper)
+        public SessionController(
+            IDataRepositoryGetAllById<Session> dataRepository,
+            IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise,
+            IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal,
+            IDataRepository<Exercise> dataRepositoryExercise,
+            IMapper mapper,
+            IDataRepository<ExerciseMuscleLink> dataRepositoryExerciseMuscleLink,
+            IDataRepository<Muscle> dataRepositoryMuscle
+        )
         {
             this.dataRepository = dataRepository;
             this.dataRepositorySessionExercise = dataRepositorySessionExercise;
             this.dataRepositoryExerciseGoal = dataRepositoryExerciseGoal;
             this.dataRepositoryExercise = dataRepositoryExercise;
             _mapper = mapper;
+            this.dataRepositoryExerciseMuscleLink = dataRepositoryExerciseMuscleLink;
+            this.dataRepositoryMuscle = dataRepositoryMuscle;
         }
         //[Authorize]
         [HttpGet("ByWorkoutId/{workoutId}")]
@@ -144,7 +156,7 @@ namespace Orkaris_Back.Controllers
                 {
                     // D'abord supprimer la relation
                     await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
-                    
+
                     // Ensuite supprimer l'exercise goal
                     var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(sessionExercise.ExerciseId);
                     if (exerciseGoal.Value != null)
@@ -181,7 +193,7 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<object>>> GetMusclesBySession(Guid sessionId)
         {
-            // 1. Récupère tous les SessionExercise pour la session (table de jointure : t_j_session_exercise_goal_seg)
+            // 1. Récupère tous les SessionExercise pour la session
             var sessionExercisesResult = await dataRepositorySessionExercise.GetAllByIdAsync(sessionId);
             var sessionExercises = sessionExercisesResult.Value?.ToList();
             if (sessionExercises == null || !sessionExercises.Any())
@@ -190,27 +202,37 @@ namespace Orkaris_Back.Controllers
             // 2. Pour chaque SessionExercise, récupérer l'ExerciseGoal (exg_id)
             var exerciseGoalIds = sessionExercises.Select(se => se.ExerciseId).ToList();
 
-            // 3. Pour chaque ExerciseGoal, récupérer l'ExerciseId (exr_id), Sets et Reps
+            // 3. Récupérer les ExerciseGoal correspondants
             var allExerciseGoalsResult = await dataRepositoryExerciseGoal.GetAllAsync();
             var allExerciseGoals = allExerciseGoalsResult.Value?.ToList() ?? new List<ExerciseGoal>();
             var relevantGoals = allExerciseGoals.Where(eg => exerciseGoalIds.Contains(eg.Id)).ToList();
 
-            // 4. Pour chaque Exercise, récupérer les muscles associés
+            // 4. Récupérer les ExerciseId associés
             var exerciseIds = relevantGoals.Select(eg => eg.ExerciseId).Distinct().ToList();
-            var allExercisesResult = await dataRepositoryExercise.GetAllAsync();
-            var allExercises = allExercisesResult.Value?.ToList() ?? new List<Exercise>();
-            var exerciseDict = allExercises.Where(e => exerciseIds.Contains(e.Id)).ToDictionary(e => e.Id, e => e);
 
-            // 5. Pour chaque muscle, additionner les reps/sets de tous les ExerciseGoal de la session
+            // 5. Récupérer les liens exercice-muscle
+            var allLinksResult = await dataRepositoryExerciseMuscleLink.GetAllAsync();
+            var allLinks = allLinksResult.Value?.ToList() ?? new List<ExerciseMuscleLink>();
+            var relevantLinks = allLinks.Where(l => exerciseIds.Contains(l.ExerciseId)).ToList();
+
+            // 6. Récupérer les muscles associés
+            var muscleIds = relevantLinks.Select(l => l.MuscleId).Distinct().ToList();
+            var allMusclesResult = await dataRepositoryMuscle.GetAllAsync();
+            var allMuscles = allMusclesResult.Value?.ToList() ?? new List<Muscle>();
+            var muscleDict = allMuscles.Where(m => muscleIds.Contains(m.Id)).ToDictionary(m => m.Id, m => m);
+
+            // 7. Accumuler les stats par muscle
             var muscleStats = new Dictionary<string, (int nbRep, int nbSet)>();
 
             foreach (var goal in relevantGoals)
             {
-                if (!exerciseDict.TryGetValue(goal.ExerciseId, out var exercise))
-                    continue;
-
-                foreach (var muscle in exercise.Muscles)
+                // Pour chaque exercice lié à ce goal, trouver les muscles
+                var links = relevantLinks.Where(l => l.ExerciseId == goal.ExerciseId);
+                foreach (var link in links)
                 {
+                    if (!muscleDict.TryGetValue(link.MuscleId, out var muscle))
+                        continue;
+
                     if (muscleStats.ContainsKey(muscle.Name))
                     {
                         var prev = muscleStats[muscle.Name];
@@ -223,10 +245,11 @@ namespace Orkaris_Back.Controllers
                 }
             }
 
-            var result = muscleStats.Select(ms => new {
+            // 8. Appliquer une formule sur les reps/sets pour chaque muscle
+            var result = muscleStats.Select(ms => new
+            {
                 nomMuscle = ms.Key,
-                nbRep = ms.Value.nbRep,
-                nbSet = ms.Value.nbSet
+                valeur = ms.Value.nbRep * ms.Value.nbSet // 🧠 Formule : adapte ici si besoin
             }).ToList();
 
             return Ok(result);

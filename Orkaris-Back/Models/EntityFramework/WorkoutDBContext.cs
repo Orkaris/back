@@ -26,6 +26,7 @@ namespace Orkaris_Back.Models.EntityFramework
         public DbSet<User> Users { get; set; }
         public DbSet<SessionExercise> SessionExercises { get; set; }
         public DbSet<EmailConfirmationToken> EmailConfirmationTokens { get; set; }
+        public DbSet<ExerciseMuscleLink> ExerciseMuscleLinks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -181,26 +182,6 @@ namespace Orkaris_Back.Models.EntityFramework
                 // Navigation properties
                 entity.HasMany(e => e.ExerciseGoalExercice).WithOne(eg => eg.ExerciseExerciseGoal).HasForeignKey(eg => eg.ExerciseId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.ExerciseCategoryExercise).WithOne(et => et.ExerciseExerciseCategory).HasForeignKey(et => et.ExerciseId).OnDelete(DeleteBehavior.Cascade);
-                entity
-                .HasMany(e => e.Muscles)
-                .WithMany(m => m.Exercises)
-                .UsingEntity<Dictionary<string, object>>(
-                    "t_e_exercise_muscle_link",
-                    j => j.HasOne<Muscle>()
-                        .WithMany()
-                        .HasForeignKey("mus_id")
-                        .HasConstraintName("FK_ExerciseMuscle_Muscle")
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j => j.HasOne<Exercise>()
-                        .WithMany()
-                        .HasForeignKey("exr_id")
-                        .HasConstraintName("FK_ExerciseMuscle_Exercise")
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("exr_id", "mus_id");
-                        j.ToTable("t_e_exercise_muscle_link");
-                    });
             });
             modelBuilder.Entity<ExerciseGoal>(entity =>
             {
@@ -218,7 +199,6 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.HasMany(e => e.SessionExerciseExerciseGoal).WithOne(se => se.ExerciseGoalSessionExercise).HasForeignKey(se => se.ExerciseId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.ExerciseGoalPerformanceExerciseGoal).WithOne(egp => egp.ExerciseGoalExerciseGoalPerformance).HasForeignKey(egp => egp.ExerciseGoalId).OnDelete(DeleteBehavior.Cascade);
             });
-
             modelBuilder.Entity<EmailConfirmationToken>(entity =>
             {
                 entity.ToTable("t_email_confirmation_tokens_ect");
@@ -228,9 +208,26 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.UserId).IsRequired().HasColumnName("usr_id");
                 entity.Property(e => e.ExpirationDate).IsRequired().HasColumnName("ect_expiration_date");
                 entity.Property(e => e.IsUsed).IsRequired().HasColumnName("ect_is_used");
-
                 // Navigation properties
                 entity.HasOne(e => e.UserEmail).WithMany(u => u.EmailUser).HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<ExerciseMuscleLink>(entity =>
+            {
+                entity.ToTable("t_e_exercise_muscle_link");
+                entity.HasKey(e => new { e.ExerciseId, e.MuscleId });
+                entity.Property(e => e.ExerciseId).IsRequired().HasColumnName("exr_id");
+                entity.Property(e => e.MuscleId).IsRequired().HasColumnName("mus_id");
+
+                // Navigation properties
+                entity.HasOne(e => e.ExerciseExerciseMuscle)
+                    .WithMany(e => e.ExerciseMuscleExercise)
+                    .HasForeignKey(e => e.ExerciseId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.MuscleExerciseMuscle)
+                    .WithMany(m => m.ExerciseMuscleMuscle)
+                    .HasForeignKey(e => e.MuscleId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
