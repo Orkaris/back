@@ -17,8 +17,6 @@ namespace Orkaris_Back.Controllers
         private readonly IDataRepositoryGetAllById<Session> dataRepository;
         private readonly IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise;
         private readonly IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal;
-        private readonly IDataRepositoryInterTable<ExerciseGoalPerformance> dataRepositoryExerciseGoalPerformance;
-        private readonly IDataRepositoryInterTable<SessionPerformance> dataRepositorySessionPerformance;
         private readonly IDataRepository<Exercise> dataRepositoryExercise;
         private readonly IMapper _mapper;
         private readonly IDataRepository<ExerciseMuscleLink> dataRepositoryExerciseMuscleLink;
@@ -31,8 +29,6 @@ namespace Orkaris_Back.Controllers
             IDataRepository<Exercise> dataRepositoryExercise,
             IDataRepository<ExerciseMuscleLink> dataRepositoryExerciseMuscleLink,
             IDataRepository<Muscle> dataRepositoryMuscle,
-            IDataRepositoryInterTable<ExerciseGoalPerformance> dataRepositoryExerciseGoalPerformance,
-            IDataRepositoryInterTable<SessionPerformance> dataRepositorySessionPerformance,
             IMapper mapper
         )
         {
@@ -42,8 +38,6 @@ namespace Orkaris_Back.Controllers
             this.dataRepositoryExercise = dataRepositoryExercise;
             this.dataRepositoryExerciseMuscleLink = dataRepositoryExerciseMuscleLink;
             this.dataRepositoryMuscle = dataRepositoryMuscle;
-            this.dataRepositoryExerciseGoalPerformance = dataRepositoryExerciseGoalPerformance;
-            this.dataRepositorySessionPerformance = dataRepositorySessionPerformance;
             _mapper = mapper;
         }
         //[Authorize]
