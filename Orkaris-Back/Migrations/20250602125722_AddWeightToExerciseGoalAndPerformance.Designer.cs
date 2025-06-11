@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Orkaris_Back.Models.EntityFramework;
@@ -11,9 +12,11 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    partial class WorkoutDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250602125722_AddWeightToExerciseGoalAndPerformance")]
+    partial class AddWeightToExerciseGoalAndPerformance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,24 +208,6 @@ namespace Orkaris_Back.Migrations
                     b.HasIndex("ExerciseGoalId");
 
                     b.ToTable("t_e_exercise_goal_performance_egp", (string)null);
-                });
-
-            modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Muscle", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("mus_id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("mus_name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("t_e_muscle_mus");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Session", b =>
@@ -426,21 +411,6 @@ namespace Orkaris_Back.Migrations
                     b.ToTable("t_e_Workout_pgr", (string)null);
                 });
 
-            modelBuilder.Entity("t_e_exercise_muscle_link", b =>
-                {
-                    b.Property<Guid>("exr_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("mus_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("exr_id", "mus_id");
-
-                    b.HasIndex("mus_id");
-
-                    b.ToTable("t_e_exercise_muscle_link", (string)null);
-                });
-
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Category", b =>
                 {
                     b.HasOne("Orkaris_Back.Models.EntityFramework.Sport", "SportCategory")
@@ -562,23 +532,6 @@ namespace Orkaris_Back.Migrations
                         .IsRequired();
 
                     b.Navigation("UserWorkout");
-                });
-
-            modelBuilder.Entity("t_e_exercise_muscle_link", b =>
-                {
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.Exercise", null)
-                        .WithMany()
-                        .HasForeignKey("exr_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ExerciseMuscle_Exercise");
-
-                    b.HasOne("Orkaris_Back.Models.EntityFramework.Muscle", null)
-                        .WithMany()
-                        .HasForeignKey("mus_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ExerciseMuscle_Muscle");
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Category", b =>

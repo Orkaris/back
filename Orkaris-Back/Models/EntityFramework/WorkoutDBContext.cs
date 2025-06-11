@@ -161,6 +161,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.Id).HasColumnName("egp_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Reps).HasColumnName("egp_reps");
                 entity.Property(e => e.Sets).HasColumnName("egp_sets");
+                entity.Property(e => e.Weight).HasColumnName("egp_weight");
                 entity.Property(e => e.CreatedAt).HasColumnName("egp_created_at");
                 entity.Property(e => e.ExerciseGoalId).IsRequired().HasColumnName("exg_id");
 
@@ -180,6 +181,26 @@ namespace Orkaris_Back.Models.EntityFramework
                 // Navigation properties
                 entity.HasMany(e => e.ExerciseGoalExercice).WithOne(eg => eg.ExerciseExerciseGoal).HasForeignKey(eg => eg.ExerciseId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.ExerciseCategoryExercise).WithOne(et => et.ExerciseExerciseCategory).HasForeignKey(et => et.ExerciseId).OnDelete(DeleteBehavior.Cascade);
+                entity
+                .HasMany(e => e.Muscles)
+                .WithMany(m => m.Exercises)
+                .UsingEntity<Dictionary<string, object>>(
+                    "t_e_exercise_muscle_link",
+                    j => j.HasOne<Muscle>()
+                        .WithMany()
+                        .HasForeignKey("mus_id")
+                        .HasConstraintName("FK_ExerciseMuscle_Muscle")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Exercise>()
+                        .WithMany()
+                        .HasForeignKey("exr_id")
+                        .HasConstraintName("FK_ExerciseMuscle_Exercise")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j =>
+                    {
+                        j.HasKey("exr_id", "mus_id");
+                        j.ToTable("t_e_exercise_muscle_link");
+                    });
             });
             modelBuilder.Entity<ExerciseGoal>(entity =>
             {
@@ -188,6 +209,7 @@ namespace Orkaris_Back.Models.EntityFramework
                 entity.Property(e => e.Id).HasColumnName("exg_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Reps).HasColumnName("exg_reps");
                 entity.Property(e => e.Sets).HasColumnName("exg_sets");
+                entity.Property(e => e.Weight).HasColumnName("exg_weight");
                 entity.Property(e => e.CreatedAt).HasColumnName("exr_created_at");
                 entity.Property(e => e.ExerciseId).IsRequired().HasColumnName("exr_id");
 
