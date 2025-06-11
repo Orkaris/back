@@ -12,8 +12,8 @@ using Orkaris_Back.Models.EntityFramework;
 namespace Orkaris_Back.Migrations
 {
     [DbContext(typeof(WorkoutDBContext))]
-    [Migration("20250523141147_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250611080500_Refacto")]
+    partial class Refacto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -400,7 +400,7 @@ namespace Orkaris_Back.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("t_e_Workout_pgr", (string)null);
+                    b.ToTable("t_e_Workout_wkt", (string)null);
                 });
 
             modelBuilder.Entity("Orkaris_Back.Models.EntityFramework.Category", b =>

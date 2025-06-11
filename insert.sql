@@ -3,7 +3,7 @@ DELETE FROM t_e_user_usr;
 DELETE FROM "t_e_Exercise_exr";
 DELETE FROM t_e_exercise_goal_exg;
 DELETE FROM t_e_category_cat;
-DELETE FROM "t_e_Workout_pgr";
+DELETE FROM "t_e_Workout_wkt";
 DELETE FROM "t_email_confirmation_tokens_ect";
 DELETE FROM t_j_exercise_category_ext;
 DELETE FROM t_e_session_ses;
@@ -148,7 +148,7 @@ INSERT INTO t_e_category_cat (cat_id, cat_name, spo_id, cat_created_at) VALUES
 ('08c97c82-c91b-4fd5-b94d-51e4ea15ee47', 'Adductors', 'c4e4e694-5b9f-40d3-87ac-75116d428a1f', '2024-05-01T09:24:00Z');
 
 
-INSERT INTO "t_e_Workout_pgr" (pfr_id, pfr_name, usr_id, pfr_created_at) VALUES
+INSERT INTO "t_e_Workout_wkt" (pfr_id, pfr_name, usr_id, pfr_created_at) VALUES
 ('1bca7a9c-b7a4-44d8-97d3-5d8f82f8743c', 'Full Body Routine', 'd3d185fc-b187-480b-b81c-2da474186b14', '2024-05-01T10:00:00Z'),
 ('7351fd9b-6f6e-4bb5-b66a-73e180408d65', 'Push Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', '2024-05-02T10:00:00Z'),
 ('f3f1b471-7d1b-4c7d-89e1-7f03ff0d2e6c', 'Leg Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', '2024-05-01T11:00:00Z'),
