@@ -195,25 +195,25 @@ INSERT INTO t_e_session_ses (ses_id, ses_name, usr_id, wrk_id, ses_created_at, s
 
 
 INSERT INTO t_e_exercise_goal_performance_egp (
-    egp_id, egp_reps, egp_sets, egp_created_at, exg_id
+    egp_id, egp_reps, egp_sets, egp_created_at, exg_id, egp_weight
 ) VALUES
 -- Bench Press (goal: 10 reps, 4 sets)
-('11aa22bb-3344-55cc-6677-8899aabbccdd', 10, 4, '2024-05-02T09:00:00Z', 'a1c2345d-6789-4bcd-a123-567890abcdef'),
+('11aa22bb-3344-55cc-6677-8899aabbccdd', 10, 4, '2024-05-02T09:00:00Z', 'a1c2345d-6789-4bcd-a123-567890abcdef', 80),
 
 -- Triceps Kickback (goal: 12 reps, 3 sets)
-('22bb33cc-4455-66dd-7788-99aabbccdde1', 11, 3, '2024-05-02T09:05:00Z', 'b2d3456e-7890-5cde-b234-678901bcdef0'),
+('22bb33cc-4455-66dd-7788-99aabbccdde1', 11, 3, '2024-05-02T09:05:00Z', 'b2d3456e-7890-5cde-b234-678901bcdef0', 25),
 
 -- Deadlift (goal: 5 reps, 5 sets)
-('33cc44dd-5566-77ee-8899-aabbccddeeff', 5, 4, '2024-05-02T09:10:00Z', 'c3e4567f-8901-6def-c345-789012cdef01'),
+('33cc44dd-5566-77ee-8899-aabbccddeeff', 5, 4, '2024-05-02T09:10:00Z', 'c3e4567f-8901-6def-c345-789012cdef01', 120),
 
 -- Squat (goal: 8 reps, 4 sets)
-('44dd55ee-6677-88ff-9900-bbccddeeff00', 8, 3, '2024-05-02T09:15:00Z', 'd4f56780-9012-7ef0-d456-890123def012'),
+('44dd55ee-6677-88ff-9900-bbccddeeff00', 8, 3, '2024-05-02T09:15:00Z', 'd4f56780-9012-7ef0-d456-890123def012', 100),
 
 -- Military Press (goal: 10 reps, 4 sets)
-('55ee66ff-7788-9900-aa11-cddeeff00112', 9, 4, '2024-05-02T09:20:00Z', 'e5a67891-0123-8f01-e567-901234ef0123'),
+('55ee66ff-7788-9900-aa11-cddeeff00112', 9, 4, '2024-05-02T09:20:00Z', 'e5a67891-0123-8f01-e567-901234ef0123', 60),
 
 -- Leg Raise (goal: 15 reps, 3 sets)
-('66ff7700-8899-aabb-bb22-deeff0011223', 14, 3, '2024-05-02T09:25:00Z', 'f6b78902-1234-9f12-f678-012345f01234');
+('66ff7700-8899-aabb-bb22-deeff0011223', 14, 3, '2024-05-02T09:25:00Z', 'f6b78902-1234-9f12-f678-012345f01234', 0);
 
 INSERT INTO t_e_session_performance_spe (spe_id, ses_id, spe_feeling, spe_date) VALUES
 ('91c091ea-3f8c-4d1d-9214-3a7643b9cb30', '1bca7a9c-b7a4-44d8-97d3-5d8f82f8743c', 'Felt strong throughout the session. Great pump.', '2024-06-01T08:00:00Z'),
