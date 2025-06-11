@@ -132,7 +132,7 @@ namespace Orkaris_Back.Models.EntityFramework
             });
             modelBuilder.Entity<Workout>(entity =>
             {
-                entity.ToTable("t_e_Workout_pgr");
+                entity.ToTable("t_e_Workout_wkt");
                 entity.HasKey(e => e.Id).HasName("PK_Workout");
                 entity.Property(e => e.Id).HasColumnName("pfr_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("pfr_name");

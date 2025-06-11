@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Orkaris_Back.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Refacto : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -100,7 +100,7 @@ namespace Orkaris_Back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "t_e_Workout_pgr",
+                name: "t_e_Workout_wkt",
                 columns: table => new
                 {
                     pfr_id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -112,7 +112,7 @@ namespace Orkaris_Back.Migrations
                 {
                     table.PrimaryKey("PK_Workout", x => x.pfr_id);
                     table.ForeignKey(
-                        name: "FK_t_e_Workout_pgr_t_e_user_usr_usr_id",
+                        name: "FK_t_e_Workout_wkt_t_e_user_usr_usr_id",
                         column: x => x.usr_id,
                         principalTable: "t_e_user_usr",
                         principalColumn: "usr_id",
@@ -200,9 +200,9 @@ namespace Orkaris_Back.Migrations
                 {
                     table.PrimaryKey("PK_Session", x => x.ses_id);
                     table.ForeignKey(
-                        name: "FK_t_e_session_ses_t_e_Workout_pgr_wrk_id",
+                        name: "FK_t_e_session_ses_t_e_Workout_wkt_wrk_id",
                         column: x => x.wrk_id,
-                        principalTable: "t_e_Workout_pgr",
+                        principalTable: "t_e_Workout_wkt",
                         principalColumn: "pfr_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -318,8 +318,8 @@ namespace Orkaris_Back.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_e_Workout_pgr_usr_id",
-                table: "t_e_Workout_pgr",
+                name: "IX_t_e_Workout_wkt_usr_id",
+                table: "t_e_Workout_wkt",
                 column: "usr_id");
 
             migrationBuilder.CreateIndex(
@@ -372,7 +372,7 @@ namespace Orkaris_Back.Migrations
                 name: "t_e_Exercise_exr");
 
             migrationBuilder.DropTable(
-                name: "t_e_Workout_pgr");
+                name: "t_e_Workout_wkt");
 
             migrationBuilder.DropTable(
                 name: "t_e_user_usr");
