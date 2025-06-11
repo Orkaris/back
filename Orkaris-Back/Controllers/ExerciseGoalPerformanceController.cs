@@ -10,10 +10,10 @@ namespace Orkaris_Back.Controllers
     [ApiController]
     public class ExerciseGoalPerformanceController : ControllerBase
     {
-        private readonly IDataRepository<ExerciseGoalPerformance> dataRepository;
+        private readonly IDataRepositoryGetAllById<ExerciseGoalPerformance> dataRepository;
         private readonly IMapper _mapper;
 
-        public ExerciseGoalPerformanceController(IDataRepository<ExerciseGoalPerformance> dataRepository, IMapper mapper)
+        public ExerciseGoalPerformanceController(IDataRepositoryGetAllById<ExerciseGoalPerformance> dataRepository, IMapper mapper)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
@@ -23,8 +23,9 @@ namespace Orkaris_Back.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ExerciseGoalPerformanceDTO>> GetExerciseGoalPerformanceById(Guid id)
+        public async Task<ActionResult<IEnumerable<ExerciseGoalPerformanceDTO>>> GetExerciseGoalPerformanceById(Guid id)
         {
+
             var exerciseGoalPerformance = await dataRepository.GetByIdAsync(id);
 
             if (exerciseGoalPerformance == null)
@@ -32,7 +33,16 @@ namespace Orkaris_Back.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<ExerciseGoalPerformanceDTO>(exerciseGoalPerformance.Value);
+            return Ok(_mapper.Map<IEnumerable<ExerciseGoalPerformanceDTO>>(exerciseGoalPerformance.Value));
+        }
+
+        [HttpGet("ByExerciseGoal/{exerciseGoalId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ExerciseGoalPerformanceDTO>>> GetExerciseGoalPerformanceByExerciseGoalId(Guid exerciseGoalId)
+        {
+            return Ok(_mapper.Map<IEnumerable<ExerciseGoalPerformanceDTO>>((await dataRepository.GetAllByIdAsync(exerciseGoalId)).Value));
+    
         }
 
         //[Authorize]

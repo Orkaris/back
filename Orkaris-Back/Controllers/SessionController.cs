@@ -17,6 +17,8 @@ namespace Orkaris_Back.Controllers
         private readonly IDataRepositoryGetAllById<Session> dataRepository;
         private readonly IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise;
         private readonly IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal;
+        private readonly IDataRepositoryInterTable<ExerciseGoalPerformance> dataRepositoryExerciseGoalPerformance;
+        private readonly IDataRepositoryInterTable<SessionPerformance> dataRepositorySessionPerformance;
         private readonly IDataRepository<Exercise> dataRepositoryExercise;
         private readonly IMapper _mapper;
         private readonly IDataRepository<ExerciseMuscleLink> dataRepositoryExerciseMuscleLink;
@@ -27,18 +29,22 @@ namespace Orkaris_Back.Controllers
             IDataRepositoryInterTable<SessionExercise> dataRepositorySessionExercise,
             IDataRepository<ExerciseGoal> dataRepositoryExerciseGoal,
             IDataRepository<Exercise> dataRepositoryExercise,
-            IMapper mapper,
             IDataRepository<ExerciseMuscleLink> dataRepositoryExerciseMuscleLink,
-            IDataRepository<Muscle> dataRepositoryMuscle
+            IDataRepository<Muscle> dataRepositoryMuscle,
+            IDataRepositoryInterTable<ExerciseGoalPerformance> dataRepositoryExerciseGoalPerformance,
+            IDataRepositoryInterTable<SessionPerformance> dataRepositorySessionPerformance,
+            IMapper mapper
         )
         {
             this.dataRepository = dataRepository;
             this.dataRepositorySessionExercise = dataRepositorySessionExercise;
             this.dataRepositoryExerciseGoal = dataRepositoryExerciseGoal;
             this.dataRepositoryExercise = dataRepositoryExercise;
-            _mapper = mapper;
             this.dataRepositoryExerciseMuscleLink = dataRepositoryExerciseMuscleLink;
             this.dataRepositoryMuscle = dataRepositoryMuscle;
+            this.dataRepositoryExerciseGoalPerformance = dataRepositoryExerciseGoalPerformance;
+            this.dataRepositorySessionPerformance = dataRepositorySessionPerformance;
+            _mapper = mapper;
         }
         //[Authorize]
         [HttpGet("ByWorkoutId/{workoutId}")]
@@ -55,7 +61,8 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessionsByUserId(Guid userId)
         {
-            return Ok(_mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync2(userId)).Value));
+            var sessions = _mapper.Map<IEnumerable<SessionDTO>>((await dataRepository.GetAllByIdAsync2(userId)).Value);
+            return Ok(sessions);
         }
         //[Authorize]
         // [AuthorizeUserMatch("userId")]

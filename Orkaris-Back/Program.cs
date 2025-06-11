@@ -51,7 +51,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IDataRepositoryString<User>, UserManager>();
 builder.Services.AddScoped<IDataRepository<Category>, CategoryManager>();
 builder.Services.AddScoped<IDataRepository<ExerciseGoal>, ExerciseGoalManager>();
-builder.Services.AddScoped<IDataRepository<ExerciseGoalPerformance>, ExerciseGoalPerformanceManager>();
+builder.Services.AddScoped<IDataRepositoryGetAllById<ExerciseGoalPerformance>, ExerciseGoalPerformanceManager>();
 builder.Services.AddScoped<IDataRepository<Exercise>, ExerciseManager>();
 builder.Services.AddScoped<IDataRepositoryInterTable<ExerciseCategory>, ExerciseCategoryManager>();
 builder.Services.AddScoped<IDataRepositoryInterTable<SessionExercise>, SessionExerciseManager>();
