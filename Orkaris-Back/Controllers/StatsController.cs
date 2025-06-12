@@ -26,21 +26,34 @@ namespace Orkaris_Back.Controllers
             var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1); // Lundi
             var endOfWeek = startOfWeek.AddDays(7);
 
-            // Récupère les sessions de l'utilisateur pour la semaine
-            var sessionIds = await _context.Sessions
-                .Where(s => s.UserId == userId && s.CreatedAt >= startOfWeek && s.CreatedAt < endOfWeek)
+            // Récupère les sessions de la semaine, puis filtre par userId via la table Sessions
+            var sessionIds = await _context.SessionPerformances
+                .Where(sp => sp.Date >= startOfWeek && sp.Date < endOfWeek)
+                .Select(sp => sp.SessionId)
+                .Distinct()
+                .ToListAsync();
+
+            var userSessionIds = await _context.Sessions
+                .Where(s => sessionIds.Contains(s.Id) && s.UserId == userId)
                 .Select(s => s.Id)
                 .ToListAsync();
 
             // Calcule le volume total (sets * reps * weight) pour ces sessions
-            var totalVolume = await _context.ExerciseGoalPerformances
+            var performances = await _context.ExerciseGoalPerformances
                 .Where(egp => sessionIds.Contains(
                     _context.SessionExercises
                         .Where(se => se.ExerciseId == egp.ExerciseGoalId)
                         .Select(se => se.SessionId)
                         .FirstOrDefault()))
-                .SumAsync(egp => egp.Sets * egp.Reps * egp.Weight);
+                .ToListAsync();
 
+            foreach (var egp in performances)
+            {
+                Console.WriteLine($"Sets: {egp.Sets}, Reps: {egp.Reps}, Weight: {egp.Weight}");
+            }
+
+            var totalVolume = performances.Sum(egp => egp.Sets * egp.Reps * egp.Weight);
+            Console.WriteLine($"Total volume for user {userId} from {startOfWeek} to {endOfWeek}: {totalVolume}");
             return Ok(totalVolume);
         }
 

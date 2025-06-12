@@ -53,5 +53,6 @@ public class MappingProfile : Profile
         CreateMap<SessionPerformance, SessionPerformanceDetailDTO>();
         CreateMap<ExerciseGoalPerformance, ExerciseGoalPerformanceDTO>();
         CreateMap<ExerciseGoalPerformance, ExerciseGoalPerformanceDetailDTO>();
+
     }
 }
