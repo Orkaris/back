@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Orkaris_Back.Models.DTO;
 using Orkaris_Back.Models.EntityFramework;
 using Orkaris_Back.Models.Repository;
@@ -12,11 +13,13 @@ namespace Orkaris_Back.Controllers
     {
         private readonly IDataRepository<SessionPerformance> dataRepository;
         private readonly IMapper _mapper;
+        private readonly WorkoutDBContext _context;
 
-        public SessionPerformanceController(IDataRepository<SessionPerformance> dataRepository, IMapper mapper)
+        public SessionPerformanceController(IDataRepository<SessionPerformance> dataRepository, IMapper mapper, WorkoutDBContext context)
         {
             this.dataRepository = dataRepository;
             _mapper = mapper;
+            _context = context;
         }
 
         //[Authorize]
@@ -82,6 +85,58 @@ namespace Orkaris_Back.Controllers
             await dataRepository.UpdateAsync(existingSessionPerformance.Value, sessionPerformance);
 
             return NoContent();
+        }
+
+        //[Authorize]
+        [HttpGet("user/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<SessionPerformanceDetailDTO>>> GetUserSessionHistory(Guid userId)
+        {
+            var sessionPerformances = await _context.SessionPerformances
+                .Include(sp => sp.SessionSessionPerformance)
+                .Where(sp => sp.SessionSessionPerformance.UserId == userId)
+                .OrderByDescending(sp => sp.Date)
+                .ToListAsync();
+
+            if (!sessionPerformances.Any())
+            {
+                return NotFound();
+            }
+
+            var result = new List<SessionPerformanceDetailDTO>();
+
+            foreach (var sp in sessionPerformances)
+            {
+                var sessionPerformanceDetail = _mapper.Map<SessionPerformanceDetailDTO>(sp);
+                sessionPerformanceDetail.SessionName = sp.SessionSessionPerformance?.Name ?? "Unknown Session";
+
+                var exerciseGoalPerformances = await _context.ExerciseGoalPerformances
+                    .Include(egp => egp.ExerciseGoalExerciseGoalPerformance)
+                        .ThenInclude(eg => eg.ExerciseExerciseGoal)
+                    .Where(egp => _context.SessionExercises
+                        .Where(se => se.SessionId == sp.SessionId)
+                        .Select(se => se.ExerciseId)
+                        .Contains(egp.ExerciseGoalId))
+                    .ToListAsync();
+
+                var exerciseGoalPerformanceDetails = exerciseGoalPerformances.Select(egp => new ExerciseGoalPerformanceDetailDTO
+                {
+                    Id = egp.Id,
+                    Reps = egp.Reps,
+                    Sets = egp.Sets,
+                    Weight = egp.Weight,
+                    CreatedAt = egp.CreatedAt,
+                    ExerciseGoalId = egp.ExerciseGoalId,
+                    ExerciseName = egp.ExerciseGoalExerciseGoalPerformance?.ExerciseExerciseGoal?.Name ?? "Unknown Exercise",
+                    ExerciseDescription = egp.ExerciseGoalExerciseGoalPerformance?.ExerciseExerciseGoal?.Description
+                }).ToList();
+
+                sessionPerformanceDetail.ExerciseGoalPerformances = exerciseGoalPerformanceDetails;
+                result.Add(sessionPerformanceDetail);
+            }
+
+            return Ok(result);
         }
     }
 }

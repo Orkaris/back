@@ -1,10 +1,11 @@
 using System;
+using AutoMapper;
 using Orkaris_Back.Models.DTO;
 using Orkaris_Back.Models.EntityFramework;
 
 namespace Orkaris_Back.Mapping;
 
-public class MappingProfile : AutoMapper.Profile
+public class MappingProfile : Profile
 {
     public MappingProfile()
     {
@@ -47,5 +48,10 @@ public class MappingProfile : AutoMapper.Profile
         CreateMap<PostExerciseGoalPerformanceDTO, ExerciseGoalPerformance>();
         CreateMap<ExerciseGoalPerformance, ExerciseGoalPerformanceDTO>();
 
+        CreateMap<SessionPerformance, SessionPerformanceDTO>();
+        CreateMap<PostSessionPerformanceDTO, SessionPerformance>();
+        CreateMap<SessionPerformance, SessionPerformanceDetailDTO>();
+        CreateMap<ExerciseGoalPerformance, ExerciseGoalPerformanceDTO>();
+        CreateMap<ExerciseGoalPerformance, ExerciseGoalPerformanceDetailDTO>();
     }
 }
