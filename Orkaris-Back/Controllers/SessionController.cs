@@ -143,50 +143,101 @@ namespace Orkaris_Back.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutSession(Guid id, PostSession2DTO sessionDTO)
         {
-            var existingSession = await dataRepository.GetByIdAsync(id);
-            if (existingSession.Value == null)
+            try
             {
-                return NotFound();
-            }
-
-            // Supprimer les anciens exercise goals et leurs relations
-            var existingSessionExercises = await dataRepositorySessionExercise.GetAllByIdAsync(id);
-            if (existingSessionExercises.Value != null)
-            {
-                foreach (var sessionExercise in existingSessionExercises.Value)
+                // Validation des données
+                if (sessionDTO == null)
                 {
-                    // D'abord supprimer la relation
-                    await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
+                    return BadRequest("Session data cannot be null");
+                }
 
-                    // Ensuite supprimer l'exercise goal
-                    var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(sessionExercise.ExerciseId);
-                    if (exerciseGoal.Value != null)
+                if (sessionDTO.SessionExerciseSession == null || !sessionDTO.SessionExerciseSession.Any())
+                {
+                    return BadRequest("Session must contain at least one exercise");
+                }
+
+                // Vérification de la session existante
+                var existingSession = await dataRepository.GetByIdAsync(id);
+                if (existingSession.Value == null)
+                {
+                    return NotFound("Session not found");
+                }
+
+                try
+                {
+                    // Mise à jour de la session de base
+                    var updatedSession = _mapper.Map<Session>(sessionDTO);
+                    updatedSession.Id = existingSession.Value.Id; // S'assurer que l'ID est préservé
+                    await dataRepository.UpdateAsync(existingSession.Value, updatedSession);
+
+                    // Récupération des anciens exercise goals
+                    var existingSessionExercises = await dataRepositorySessionExercise.GetAllByIdAsync(id);
+                    var existingExerciseGoals = new List<ExerciseGoal>();
+
+                    if (existingSessionExercises.Value != null)
                     {
-                        await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal.Value);
+                        try
+                        {
+                            // Récupération des exercise goals existants
+                            var exerciseGoalIds = existingSessionExercises.Value.Select(se => se.ExerciseId).ToList();
+                            var allExerciseGoals = await dataRepositoryExerciseGoal.GetAllAsync();
+                            existingExerciseGoals = allExerciseGoals.Value?
+                                .Where(eg => exerciseGoalIds.Contains(eg.Id))
+                                .ToList() ?? new List<ExerciseGoal>();
+
+                            // Suppression des relations
+                            foreach (var sessionExercise in existingSessionExercises.Value)
+                            {
+                                await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
+                            }
+
+                            // Suppression des exercise goals
+                            foreach (var exerciseGoal in existingExerciseGoals)
+                            {
+                                await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return StatusCode(500, $"Error while deleting existing exercise goals: {ex.Message}\nInner exception: {ex.InnerException?.Message}");
+                        }
                     }
+
+                    try
+                    {
+                        // Création des nouveaux exercise goals
+                        var newExerciseGoals = sessionDTO.SessionExerciseSession
+                            .Select(dto => _mapper.Map<ExerciseGoal>(dto))
+                            .ToList();
+
+                        foreach (var exerciseGoal in newExerciseGoals)
+                        {
+                            await dataRepositoryExerciseGoal.AddAsync(exerciseGoal);
+                            await dataRepositorySessionExercise.AddAsync(new SessionExercise
+                            {
+                                SessionId = existingSession.Value.Id,
+                                ExerciseId = exerciseGoal.Id
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, $"Error while creating new exercise goals: {ex.Message}\nInner exception: {ex.InnerException?.Message}");
+                    }
+
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    var innerExceptionMessage = ex.InnerException?.Message ?? "No inner exception";
+                    return StatusCode(500, $"Error during session update: {ex.Message}\nInner exception: {innerExceptionMessage}\nStack trace: {ex.StackTrace}");
                 }
             }
-
-            // Mettre à jour les informations de base de la session
-            var session = _mapper.Map(sessionDTO, existingSession.Value);
-            await dataRepository.UpdateAsync(existingSession.Value, session);
-
-            // Créer les nouveaux exercise goals et leurs relations
-            foreach (var exerciseGoalDTO in sessionDTO.SessionExerciseSession)
+            catch (Exception ex)
             {
-                // D'abord créer l'exercise goal
-                var exerciseGoal = _mapper.Map<ExerciseGoal>(exerciseGoalDTO);
-                await dataRepositoryExerciseGoal.AddAsync(exerciseGoal);
-
-                // Créer la relation avec l'ID de l'exercise goal créé
-                await dataRepositorySessionExercise.AddAsync(new SessionExercise
-                {
-                    SessionId = session.Id,
-                    ExerciseId = exerciseGoal.Id
-                });
+                var innerExceptionMessage = ex.InnerException?.Message ?? "No inner exception";
+                return StatusCode(500, $"An error occurred while updating the session: {ex.Message}\nInner exception: {innerExceptionMessage}\nStack trace: {ex.StackTrace}");
             }
-
-            return NoContent();
         }
 
         [HttpGet("{sessionId}/muscles")]
