@@ -47,5 +47,8 @@ public class MappingProfile : AutoMapper.Profile
         CreateMap<PostExerciseGoalPerformanceDTO, ExerciseGoalPerformance>();
         CreateMap<ExerciseGoalPerformance, ExerciseGoalPerformanceDTO>();
 
+        CreateMap<PostSessionPerformanceDTO, SessionPerformance>();
+        CreateMap<SessionPerformance, SessionPerformanceDTO>();
+
     }
 }
