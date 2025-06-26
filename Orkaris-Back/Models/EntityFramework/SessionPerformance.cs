@@ -19,6 +19,9 @@ namespace Orkaris_Back.Models.EntityFramework
         [Required, Column("spe_date")]
         public DateTime Date { get; set; }
 
+        [Required, Column("ses_duration")]
+        public TimeSpan Duration { get; set; } = TimeSpan.Zero;
+
         // Navigation properties
         [ForeignKey("SessionId"), InverseProperty(nameof(Session.SessionPerformanceSession))]
         public Session? SessionSessionPerformance { get; set; }

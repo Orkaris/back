@@ -105,7 +105,6 @@ namespace Orkaris_Back.Controllers
                 .Select(s => new
                 {
                     date = s.CreatedAt,
-                    duration = s.Duration
                 })
                 .ToListAsync();
             var testSessions = new[]
