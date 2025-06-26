@@ -36,6 +36,7 @@ public class SessionManager : IDataRepositoryGetAllById<Session>
     public async Task UpdateAsync(Session entityToUpdate, Session entity)
     {
         _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+        
         await _context.SaveChangesAsync();
     }
 

@@ -32,8 +32,7 @@ public class PutSessionDTO
 {
     public string Name { get; set; } = string.Empty;
     public Guid UserId { get; set; }
-    public Guid WorkoutId { get; set; }
-    public ICollection<PutExerciseGoalDTO> ExercisesGoal { get; set; } = new List<PutExerciseGoalDTO>();
+    public ICollection<PutExerciseGoalDTO> SessionExerciseSession { get; set; } = new List<PutExerciseGoalDTO>();
 }
 
 
