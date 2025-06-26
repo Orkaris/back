@@ -192,24 +192,6 @@ namespace Orkaris_Back.Controllers
                 }
             }
 
-            // Supprimer les exercices qui ne sont plus dans le DTO
-            var exerciseGoalsToRemove = existingExerciseGoalIds.Except(incomingExerciseGoalIds).ToList();
-            foreach (var exerciseGoalId in exerciseGoalsToRemove)
-            {
-                // Supprimer la relation
-                var sessionExercise = existingSessionExercises.Value?.FirstOrDefault(se => se.ExerciseId == exerciseGoalId);
-                if (sessionExercise != null)
-                {
-                    await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
-                }
-
-                // Supprimer l'exercise goal
-                var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoalId);
-                if (exerciseGoal.Value != null)
-                {
-                    await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal.Value);
-                }
-            }
 
             return NoContent();
         }
