@@ -39,7 +39,9 @@ curl -X 'GET' \ 'http://localhost:5000/weatherforecast' \ -H 'accept: applicatio
 Pour la base
 
 ```bash
-docker exec -it orkaris-back bash -c 'cd Orkaris-Back && dotnet tool install --global dotnet-ef --version 8.0.0 && export PATH="$PATH:/root/.dotnet/tools" && dotnet ef database update'
+docker exec -it orkaris-db psql -U postgres -c 'CREATE DATABASE orkaris;' &&
+docker exec -it orkaris-back bash -c 'cd Orkaris-Back && dotnet tool install --global dotnet-ef --version 8.0.0 && export PATH="$PATH:/root/.dotnet/tools" && dotnet ef database update' &&
+cat insert.sql | docker exec -i orkaris-db psql -U postgres -d orkaris
 
 ```
 Pour avoir les données
