@@ -148,46 +148,70 @@ namespace Orkaris_Back.Controllers
                 return NotFound();
             }
 
-            // Supprimer les anciens exercise goals et leurs relations
+            // Récupérer les exercise goals existants
             var existingSessionExercises = await dataRepositorySessionExercise.GetAllByIdAsync(id);
-            if (existingSessionExercises.Value != null)
-            {
-                foreach (var sessionExercise in existingSessionExercises.Value)
-                {
-                    // D'abord supprimer la relation
-                    await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
-
-                    // Ensuite supprimer l'exercise goal
-                    var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(sessionExercise.ExerciseId);
-                    if (exerciseGoal.Value != null)
-                    {
-                        await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal.Value);
-                    }
-                }
-            }
+            var existingExerciseGoalIds = existingSessionExercises.Value?.Select(se => se.ExerciseId).ToList() ?? new List<Guid>();
 
             // Mettre à jour les informations de base de la session
             var session = _mapper.Map<Session>(sessionDTO);
             session.Id = id;
             session.WorkoutId = existingSession.Value.WorkoutId;
-            session.UserId = existingSession.Value.UserId; // Add this line
+            session.UserId = existingSession.Value.UserId;
             await dataRepository.UpdateAsync(existingSession.Value, session);
+
+            // Traiter les exercices du DTO
+            var incomingExerciseGoalIds = new List<Guid>();
 
             foreach (var exerciseGoalDTO in sessionDTO.SessionExerciseSession)
             {
-                var exerciseGoal = _mapper.Map<ExerciseGoal>(exerciseGoalDTO);
-                await dataRepositoryExerciseGoal.AddAsync(exerciseGoal);
-
-                var sessionExercise = new SessionExercise
+                if (exerciseGoalDTO.Id != Guid.Empty && existingExerciseGoalIds.Contains(exerciseGoalDTO.Id))
                 {
-                    SessionId = session.Id,
-                    ExerciseId = exerciseGoal.Id
-                };
+                    // Modifier l'exercice existant
+                    var existingExerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoalDTO.Id);
+                    if (existingExerciseGoal.Value != null)
+                    {
+                        var updatedExerciseGoal = _mapper.Map<ExerciseGoal>(exerciseGoalDTO);
+                        updatedExerciseGoal.Id = exerciseGoalDTO.Id;
+                        await dataRepositoryExerciseGoal.UpdateAsync(existingExerciseGoal.Value, updatedExerciseGoal);
+                        incomingExerciseGoalIds.Add(exerciseGoalDTO.Id);
+                    }
+                }
+                else
+                {
+                    // Créer un nouvel exercice
+                    var exerciseGoal = _mapper.Map<ExerciseGoal>(exerciseGoalDTO);
+                    await dataRepositoryExerciseGoal.AddAsync(exerciseGoal);
 
-                await dataRepositorySessionExercise.AddAsync(sessionExercise);
+                    var sessionExercise = new SessionExercise
+                    {
+                        SessionId = session.Id,
+                        ExerciseId = exerciseGoal.Id
+                    };
+                    await dataRepositorySessionExercise.AddAsync(sessionExercise);
+                    incomingExerciseGoalIds.Add(exerciseGoal.Id);
+                }
             }
-            return NoContent();
 
+            // Supprimer les exercices qui ne sont plus dans le DTO
+            var exerciseGoalsToRemove = existingExerciseGoalIds.Except(incomingExerciseGoalIds).ToList();
+            foreach (var exerciseGoalId in exerciseGoalsToRemove)
+            {
+                // Supprimer la relation
+                var sessionExercise = existingSessionExercises.Value?.FirstOrDefault(se => se.ExerciseId == exerciseGoalId);
+                if (sessionExercise != null)
+                {
+                    await dataRepositorySessionExercise.DeleteAsync(sessionExercise);
+                }
+
+                // Supprimer l'exercise goal
+                var exerciseGoal = await dataRepositoryExerciseGoal.GetByIdAsync(exerciseGoalId);
+                if (exerciseGoal.Value != null)
+                {
+                    await dataRepositoryExerciseGoal.DeleteAsync(exerciseGoal.Value);
+                }
+            }
+
+            return NoContent();
         }
 
         [HttpGet("{sessionId}/muscles")]
