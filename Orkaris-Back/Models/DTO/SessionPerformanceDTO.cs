@@ -15,6 +15,7 @@ public class PostSessionPerformanceDTO
 {
     public Guid SessionId { get; set; }
     public string? Feeling { get; set; }
+    public TimeSpan Duration { get; set; }
     public DateTime Date { get; set; } = DateTime.UtcNow;
 }
 
