@@ -128,15 +128,8 @@ namespace Orkaris_Back.Controllers
                 new { date = DateTime.UtcNow.AddDays(-41), duration = 45 },
                 new { date = DateTime.UtcNow.AddDays(-48), duration = 30 },
             };
-            return Ok(testSessions);
-            //return Ok(sessions);
+            //return Ok(testSessions);
+            return Ok(sessions);
         }
-
-
-
-
-
-
-
     }
 }
