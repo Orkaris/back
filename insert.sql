@@ -185,13 +185,13 @@ INSERT INTO t_j_exercise_category_ext (exr_id, cat_id) VALUES
 ('eeff0011-2233-4455-6677-8899aabbccdd', '879f0e2c-bf20-4c91-90ee-f58b730fd218');
 
 
-INSERT INTO t_e_session_ses (ses_id, ses_name, usr_id, wrk_id, ses_created_at, ses_duration) VALUES
-('1bca7a9c-b7a4-44d8-97d3-5d8f82f8743c', 'Full Body Routine', 'd3d185fc-b187-480b-b81c-2da474186b14', '1bca7a9c-b7a4-44d8-97d3-5d8f82f8743c', '2024-05-01T08:00:00Z', '01:12:34'),
-('7351fd9b-6f6e-4bb5-b66a-73e180408d65', 'Push Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', '7351fd9b-6f6e-4bb5-b66a-73e180408d65', '2024-05-02T08:00:00Z', '01:12:34'),
-('f3f1b471-7d1b-4c7d-89e1-7f03ff0d2e6c', 'Leg Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', 'f3f1b471-7d1b-4c7d-89e1-7f03ff0d2e6c', '2024-05-03T08:00:00Z', '01:12:34'),
-('2e48b3ff-8fe1-4a8f-88b3-d13a0209debc', 'Pull Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', '2e48b3ff-8fe1-4a8f-88b3-d13a0209debc', '2024-05-04T08:00:00Z', '01:12:34'),
-('4cd4b80a-25db-419d-b37a-45c3e3371a2c', 'Upper Body Hypertrophy', '0574cdf2-034a-4868-91b9-bed150ee077d', '4cd4b80a-25db-419d-b37a-45c3e3371a2c', '2024-05-05T08:00:00Z', '01:12:34'),
-('ae5cb69b-2789-4c94-8ef8-9267ef034268', 'Glutes and Core', '0574cdf2-034a-4868-91b9-bed150ee077d', 'ae5cb69b-2789-4c94-8ef8-9267ef034268', '2024-05-06T08:00:00Z', '01:12:34');
+INSERT INTO t_e_session_ses (ses_id, ses_name, usr_id, wrk_id, ses_created_at) VALUES
+('1bca7a9c-b7a4-44d8-97d3-5d8f82f8743c', 'Full Body Routine', 'd3d185fc-b187-480b-b81c-2da474186b14', '1bca7a9c-b7a4-44d8-97d3-5d8f82f8743c', '2024-05-01T08:00:00Z'),
+('7351fd9b-6f6e-4bb5-b66a-73e180408d65', 'Push Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', '7351fd9b-6f6e-4bb5-b66a-73e180408d65', '2024-05-02T08:00:00Z'),
+('f3f1b471-7d1b-4c7d-89e1-7f03ff0d2e6c', 'Leg Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', 'f3f1b471-7d1b-4c7d-89e1-7f03ff0d2e6c', '2024-05-03T08:00:00Z'),
+('2e48b3ff-8fe1-4a8f-88b3-d13a0209debc', 'Pull Day', '4a51ac07-9a45-446a-a6e6-9b783b8d888b', '2e48b3ff-8fe1-4a8f-88b3-d13a0209debc', '2024-05-04T08:00:00Z'),
+('4cd4b80a-25db-419d-b37a-45c3e3371a2c', 'Upper Body Hypertrophy', '0574cdf2-034a-4868-91b9-bed150ee077d', '4cd4b80a-25db-419d-b37a-45c3e3371a2c', '2024-05-05T08:00:00Z'),
+('ae5cb69b-2789-4c94-8ef8-9267ef034268', 'Glutes and Core', '0574cdf2-034a-4868-91b9-bed150ee077d', 'ae5cb69b-2789-4c94-8ef8-9267ef034268', '2024-05-06T08:00:00Z');
 
 
 INSERT INTO t_e_exercise_goal_performance_egp (
