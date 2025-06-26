@@ -26,34 +26,22 @@ namespace Orkaris_Back.Controllers
             var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1); // Lundi
             var endOfWeek = startOfWeek.AddDays(7);
 
-            // Récupère les sessions de la semaine, puis filtre par userId via la table Sessions
-            var sessionIds = await _context.SessionPerformances
-                .Where(sp => sp.Date >= startOfWeek && sp.Date < endOfWeek)
-                .Select(sp => sp.SessionId)
-                .Distinct()
-                .ToListAsync();
-
+            // Récupérer les IDs des sessions de l'utilisateur cette semaine
             var userSessionIds = await _context.Sessions
-                .Where(s => sessionIds.Contains(s.Id) && s.UserId == userId)
+                .Where(s => s.UserId == userId && s.CreatedAt >= startOfWeek && s.CreatedAt < endOfWeek)
                 .Select(s => s.Id)
                 .ToListAsync();
 
-            // Calcule le volume total (sets * reps * weight) pour ces sessions
+            // Récupérer les performances liées à ces sessions
             var performances = await _context.ExerciseGoalPerformances
-                .Where(egp => sessionIds.Contains(
+                .Where(egp =>
                     _context.SessionExercises
-                        .Where(se => se.ExerciseId == egp.ExerciseGoalId)
-                        .Select(se => se.SessionId)
-                        .FirstOrDefault()))
+                        .Where(se => userSessionIds.Contains(se.SessionId))
+                        .Select(se => se.ExerciseId)
+                        .Contains(egp.ExerciseGoalId))
                 .ToListAsync();
 
-            foreach (var egp in performances)
-            {
-                Console.WriteLine($"Sets: {egp.Sets}, Reps: {egp.Reps}, Weight: {egp.Weight}");
-            }
-
             var totalVolume = performances.Sum(egp => egp.Sets * egp.Reps * egp.Weight);
-            Console.WriteLine($"Total volume for user {userId} from {startOfWeek} to {endOfWeek}: {totalVolume}");
             return Ok(totalVolume);
         }
 
@@ -77,24 +65,32 @@ namespace Orkaris_Back.Controllers
         [HttpGet("weekly-sets/{userId}")]
         public async Task<IActionResult> GetSetsCountThisWeek(Guid userId)
         {
-            var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
+            var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek + 1); // Lundi
             var endOfWeek = startOfWeek.AddDays(7);
 
+            // Étape 1 : récupérer les sessions de l'utilisateur cette semaine
+            var userSessionIds = await _context.Sessions
+                .Where(s => s.UserId == userId && s.CreatedAt >= startOfWeek && s.CreatedAt < endOfWeek)
+                .Select(s => s.Id)
+                .ToListAsync();
+
+            // Étape 2 : récupérer les ExerciseIds de ces sessions
+            var exerciseIds = await _context.SessionExercises
+                .Where(se => userSessionIds.Contains(se.SessionId))
+                .Select(se => se.ExerciseId)
+                .Distinct()
+                .ToListAsync();
+
+            // Étape 3 : récupérer les performances de ces exercices
             var setsCount = await _context.ExerciseGoalPerformances
-                .Where(egp =>
-                    egp.CreatedAt >= startOfWeek &&
-                    egp.CreatedAt < endOfWeek &&
-                    egp.ExerciseGoalExerciseGoalPerformance != null &&
-                    egp.ExerciseGoalExerciseGoalPerformance.SessionExerciseExerciseGoal != null
-                )
+                .Where(egp => exerciseIds.Contains(egp.ExerciseGoalId) &&
+                              egp.CreatedAt >= startOfWeek &&
+                              egp.CreatedAt < endOfWeek)
                 .SumAsync(egp => egp.Sets);
-            if (setsCount < 0)
-            {
-                return BadRequest("0 sets found for this week.");
-            }
 
             return Ok(setsCount);
         }
+
 
         [Authorize]
         [HttpGet("last-8-weeks-sessions/{userId}")]
