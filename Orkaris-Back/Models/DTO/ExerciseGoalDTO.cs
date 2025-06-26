@@ -22,12 +22,11 @@ public class PostExerciseGoalDTO
 
 public class PutExerciseGoalDTO
 {
-    public Guid Id { get; set; }
+    public Guid ExerciseId { get; set; }
     public int Reps { get; set; }
     public int Sets { get; set; }
     public float Weight { get; set; }
 
-    public Guid ExerciseId { get; set; }
 }
 
 public class ExerciseGoalExerciseDTO : ExerciseGoalDTO

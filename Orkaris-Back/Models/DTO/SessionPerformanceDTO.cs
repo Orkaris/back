@@ -22,7 +22,7 @@ public class SessionPerformanceDetailDTO
 {
     public Guid Id { get; set; }
     public Guid SessionId { get; set; }
-    public string SessionName { get; set; }
+    public string? SessionName { get; set; }
     public string? Feeling { get; set; }
     public DateTime Date { get; set; }
     public List<ExerciseGoalPerformanceDetailDTO> ExerciseGoalPerformances { get; set; } = new List<ExerciseGoalPerformanceDetailDTO>();
@@ -36,6 +36,6 @@ public class ExerciseGoalPerformanceDetailDTO
     public float Weight { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid ExerciseGoalId { get; set; }
-    public string ExerciseName { get; set; }
+    public string? ExerciseName { get; set; }
     public string? ExerciseDescription { get; set; }
 }

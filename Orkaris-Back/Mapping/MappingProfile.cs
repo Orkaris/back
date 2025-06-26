@@ -22,6 +22,7 @@ public class MappingProfile : Profile
 
         CreateMap<Session, SessionDTO>();
         CreateMap<Session, PostSessionDTO>();
+        CreateMap<PutExerciseGoalDTO, ExerciseGoal>();
         CreateMap<PostSessionDTO, Session>();
         CreateMap<PostSession2DTO, PostSessionDTO>();
         CreateMap<PostSession2DTO, Session>();
